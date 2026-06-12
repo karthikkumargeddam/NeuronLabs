@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "submissions",
+  "info": {
+    "singularName": "submission",
+    "pluralName": "submissions",
+    "displayName": "Submission"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "bounty": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::bounty.bounty"
+    },
+    "user": {
+      "type": "string"
+    },
+    "content": {
+      "type": "text"
+    },
+    "link": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "accepted",
+        "rejected"
+      ],
+      "default": "pending"
+    }
+  }
+}

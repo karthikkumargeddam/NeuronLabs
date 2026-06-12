@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sandboxes",
+  "info": {
+    "singularName": "sandbox",
+    "pluralName": "sandboxes",
+    "displayName": "Sandbox"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "code_content": {
+      "type": "text"
+    },
+    "user": {
+      "type": "string"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "terminalOutput": {
+      "type": "text"
+    },
+    "visualization": {
+      "type": "text"
+    },
+    "environment": {
+      "type": "string",
+      "default": "vbox-gpu-a100"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    }
+  }
+}

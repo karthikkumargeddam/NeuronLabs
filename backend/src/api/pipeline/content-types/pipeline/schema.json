@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pipelines",
+  "info": {
+    "singularName": "pipeline",
+    "pluralName": "pipelines",
+    "displayName": "Pipeline"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "nodes": {
+      "type": "json"
+    },
+    "edges": {
+      "type": "json"
+    }
+  }
+}

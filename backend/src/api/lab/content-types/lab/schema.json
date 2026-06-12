@@ -1,0 +1,48 @@
+{
+    "kind": "collectionType",
+    "collectionName": "labs",
+    "info": {
+        "singularName": "lab",
+        "pluralName": "labs",
+        "displayName": "Virtual Lab",
+        "description": "Virtual environments for labs"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "uuid": {
+            "type": "uid"
+        },
+        "course": {
+            "type": "relation",
+            "relation": "oneToOne",
+            "target": "api::course.course"
+        },
+        "environment": {
+            "type": "string",
+            "required": true,
+            "default": "vbox"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "text"
+        },
+        "codeSnippet": {
+            "type": "text"
+        },
+        "terminalOutput": {
+            "type": "text"
+        },
+        "visualization": {
+            "type": "text"
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mentors",
+  "info": {
+    "singularName": "mentor",
+    "pluralName": "mentors",
+    "displayName": "Mentor"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "rate": {
+      "type": "decimal"
+    },
+    "available_hours": {
+      "type": "string"
+    },
+    "expertise": {
+      "type": "string"
+    }
+  }
+}

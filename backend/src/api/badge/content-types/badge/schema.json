@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "badges",
+  "info": {
+    "singularName": "badge",
+    "pluralName": "badges",
+    "displayName": "Badge"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "icon_url": {
+      "type": "string"
+    },
+    "criteria": {
+      "type": "string"
+    }
+  }
+}

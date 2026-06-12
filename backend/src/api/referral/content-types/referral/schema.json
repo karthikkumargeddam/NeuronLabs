@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "referrals",
+  "info": {
+    "singularName": "referral",
+    "pluralName": "referrals",
+    "displayName": "Referral"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "referrer_id": {
+      "type": "string"
+    },
+    "referred_email": {
+      "type": "email"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "signed_up",
+        "rewarded"
+      ],
+      "default": "pending"
+    },
+    "reward_credits": {
+      "type": "integer"
+    }
+  }
+}

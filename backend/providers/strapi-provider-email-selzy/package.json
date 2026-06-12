@@ -1,0 +1,9 @@
+{
+  "name": "strapi-provider-email-selzy",
+  "version": "1.0.0",
+  "description": "Selzy email provider for Strapi",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.0.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "competitions",
+  "info": {
+    "singularName": "competition",
+    "pluralName": "competitions",
+    "displayName": "Competition"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "prize": {
+      "type": "string"
+    },
+    "participants": {
+      "type": "integer"
+    },
+    "daysLeft": {
+      "type": "integer"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "color": {
+      "type": "string"
+    },
+    "iconStr": {
+      "type": "string"
+    }
+  }
+}

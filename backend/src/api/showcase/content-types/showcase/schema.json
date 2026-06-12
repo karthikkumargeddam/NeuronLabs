@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "showcases",
+  "info": {
+    "singularName": "showcase",
+    "pluralName": "showcases",
+    "displayName": "Showcase"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "author": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "color": {
+      "type": "string"
+    },
+    "avatarUrl": {
+      "type": "string"
+    },
+    "upvotes": {
+      "type": "integer"
+    },
+    "githubUrl": {
+      "type": "string"
+    }
+  }
+}

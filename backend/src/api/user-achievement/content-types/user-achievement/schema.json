@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_achievements",
+  "info": {
+    "singularName": "user-achievement",
+    "pluralName": "user-achievements",
+    "displayName": "User Achievement"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "string"
+    },
+    "badge": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::badge.badge"
+    },
+    "date_earned": {
+      "type": "datetime"
+    }
+  }
+}

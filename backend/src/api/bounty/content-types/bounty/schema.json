@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bounties",
+  "info": {
+    "singularName": "bounty",
+    "pluralName": "bounties",
+    "displayName": "Bounty"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "reward_amount": {
+      "type": "decimal"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "open",
+        "in_progress",
+        "completed"
+      ],
+      "default": "open"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "virtual_boxes",
+  "info": {
+    "singularName": "virtual-box",
+    "pluralName": "virtual-boxes",
+    "displayName": "Virtual Box"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "os_version": {
+      "type": "string"
+    },
+    "ram": {
+      "type": "string"
+    },
+    "storage": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "running",
+        "stopped",
+        "terminated"
+      ],
+      "default": "stopped"
+    },
+    "user": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Strapi application",
+  "scripts": {
+    "build": "strapi build",
+    "console": "strapi console",
+    "deploy": "strapi deploy",
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "upgrade": "npx @strapi/upgrade latest",
+    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+  },
+  "dependencies": {
+    "@ckeditor/strapi-plugin-ckeditor": "^1.1.2",
+    "@strapi/plugin-cloud": "5.47.1",
+    "@strapi/plugin-graphql": "^5.47.1",
+    "@strapi/plugin-seo": "^2.0.9",
+    "@strapi/plugin-users-permissions": "5.47.1",
+    "@strapi/provider-upload-cloudinary": "^5.47.1",
+    "@strapi/strapi": "5.47.1",
+    "axios": "^1.17.0",
+    "better-sqlite3": "12.8.0",
+    "mermaid": "^11.15.0",
+    "mysql2": "^3.22.5",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.21.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "socket.io": "^4.8.3",
+    "strapi-plugin-comments": "^3.2.4",
+    "strapi-provider-email-selzy": "file:./providers/strapi-provider-email-selzy",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0 <=24.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "16bfd5fc-c505-422a-84d6-5b6507a7a5bd",
+    "installId": "bbed2dc40e9ddb3b4881d4d262dbcbd2159a7f18c3bec841823354cffe6b86a8"
+  }
+}

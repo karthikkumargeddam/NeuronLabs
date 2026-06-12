@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hackathons",
+  "info": {
+    "singularName": "hackathon",
+    "pluralName": "hackathons",
+    "displayName": "Hackathon"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "start_date": {
+      "type": "datetime"
+    },
+    "end_date": {
+      "type": "datetime"
+    },
+    "prizes": {
+      "type": "json"
+    }
+  }
+}

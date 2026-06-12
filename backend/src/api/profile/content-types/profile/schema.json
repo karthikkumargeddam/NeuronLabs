@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "profiles",
+  "info": {
+    "singularName": "profile",
+    "pluralName": "profiles",
+    "displayName": "Profile"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "username": {
+      "type": "string",
+      "required": true
+    },
+    "avatarUrl": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "integer"
+    },
+    "score": {
+      "type": "string"
+    },
+    "badge": {
+      "type": "string"
+    },
+    "completedCourses": {
+      "type": "integer"
+    },
+    "color": {
+      "type": "string"
+    }
+  }
+}
