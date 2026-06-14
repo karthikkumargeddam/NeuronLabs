@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { useNotifications } from "../../../components/NotificationProvider";
 import { useEffect } from "react";
+import RazorpayCheckout from "../../../components/RazorpayCheckout";
 
 export default function CheckoutPage() {
   const { data: session, update } = useSession();
@@ -205,6 +206,28 @@ export default function CheckoutPage() {
                           </button>
                         </form>
                       </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Option 2: Razorpay (Credit Card, Netbanking, Wallets) */}
+            <div 
+              onClick={() => setActiveMethod("razorpay")}
+              className={`border rounded-2xl p-6 relative overflow-hidden transition-all cursor-pointer ${activeMethod === 'razorpay' ? 'border-[#0f9d58] bg-[#0f9d58]/5 shadow-[0_0_15px_rgba(15,157,88,0.1)]' : 'border-gray-800 bg-black/20 hover:border-gray-600'}`}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`w-5 h-5 rounded-full mt-1 shrink-0 transition-colors border-[5px] ${activeMethod === 'razorpay' ? 'border-[#0f9d58] bg-white' : 'border-gray-600'}`}></div>
+                <div className="flex-1">
+                  <h3 className={`text-xl font-bold mb-1 ${activeMethod === 'razorpay' ? 'text-white' : 'text-gray-400'}`}>
+                    Credit Card / Netbanking / Wallets
+                  </h3>
+                  <p className="text-gray-400 text-sm">Powered securely by Razorpay.</p>
+                  
+                  {activeMethod === "razorpay" && (
+                    <div className="mt-6 animate-fade-in border-t border-gray-800 pt-6">
+                      <RazorpayCheckout amount={planDetails.price} userEmail={session?.user?.email} />
                     </div>
                   )}
                 </div>
