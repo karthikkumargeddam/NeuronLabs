@@ -5,7 +5,7 @@ import Link from "next/link";
 import { fetchAPI } from "../../../../lib/api";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
-import RazorpayCheckout from "../../../../../components/RazorpayCheckout";
+import RazorpayCheckout from "../../../../components/RazorpayCheckout";
 
 async function getCourseData(uuid) {
   try {
