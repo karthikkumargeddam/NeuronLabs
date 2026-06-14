@@ -3,7 +3,7 @@ import { fetchAPI } from '../../lib/api';
 import { Suspense } from 'react';
 
 async function LabList() {
-  const response = await fetchAPI('/api/labs', { populate: '*', pagination: { limit: 200 } }, { cache: 'no-store' });
+  const response = await fetchAPI('/api/labs', { populate: '*', pagination: { limit: 200 } }, { next: { revalidate: 60 } });
   const labs = response?.data || [];
 
   if (labs.length === 0) {

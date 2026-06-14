@@ -4,7 +4,7 @@
   "info": {
     "singularName": "sandbox",
     "pluralName": "sandboxes",
-    "displayName": "Sandbox"
+    "displayName": "Advanced Labs"
   },
   "options": {
     "draftAndPublish": true

@@ -1,16 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Play, RotateCcw, Plus, Save, Trash2, Cpu, Zap, Beaker } from "lucide-react";
-import Editor, { loader } from "@monaco-editor/react";
-import * as monaco from 'monaco-editor';
-
-if (typeof window !== 'undefined') {
-  loader.config({ monaco });
-}
+import React, { useState } from "react";
+import Editor from "@monaco-editor/react";
 
 export default function JupyterWorkspace({ code, setCode }) {
-  const [cells, setCells] = useState([
+  const [cells] = useState([
     { type: 'markdown', content: '# Data Exploration\\nLet us load the dataset and visualize the initial parameters.' },
     { type: 'code', content: 'import pandas as pd\\nimport matplotlib.pyplot as plt\\n\\ndf = pd.read_csv("dataset.csv")\\ndf.head()', output: '<table border="1" class="dataframe text-xs text-gray-300"><thead><tr style="text-align: right;"><th></th><th>age</th><th>income</th><th>score</th></tr></thead><tbody><tr><th>0</th><td>25</td><td>45000</td><td>85</td></tr><tr><th>1</th><td>32</td><td>68000</td><td>92</td></tr></tbody></table>' },
     { type: 'code', content: code || 'df.describe()', output: null }

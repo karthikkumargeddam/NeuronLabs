@@ -826,7 +826,7 @@ export interface ApiLabLab extends Struct.CollectionTypeSchema {
   collectionName: 'labs';
   info: {
     description: 'Virtual environments for labs';
-    displayName: 'Virtual Lab';
+    displayName: 'Labs';
     pluralName: 'labs';
     singularName: 'lab';
   };
@@ -1114,7 +1114,7 @@ export interface ApiReferralReferral extends Struct.CollectionTypeSchema {
 export interface ApiSandboxSandbox extends Struct.CollectionTypeSchema {
   collectionName: 'sandboxes';
   info: {
-    displayName: 'Sandbox';
+    displayName: 'Advanced Labs';
     pluralName: 'sandboxes';
     singularName: 'sandbox';
   };

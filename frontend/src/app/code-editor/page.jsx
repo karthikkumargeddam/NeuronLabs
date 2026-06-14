@@ -1,4 +1,4 @@
-import CodeEditorClient from './CodeEditorClient';
+import CodeEditorWrapper from './CodeEditorWrapper';
 
 export const metadata = {
   title: 'Code Editor Practice | NeuronLabs',
@@ -16,7 +16,7 @@ export default function CodeEditorPage() {
           Master the top programming languages. Write, experiment, and save your code snippets directly to your profile.
         </p>
         <div className="flex-1 min-h-[600px] border border-gray-800 rounded-xl overflow-hidden shadow-2xl bg-[#0a0a0a]">
-          <CodeEditorClient />
+          <CodeEditorWrapper />
         </div>
       </div>
     </div>

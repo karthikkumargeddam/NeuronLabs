@@ -2,10 +2,10 @@ import Link from "next/link";
 import { fetchAPI } from "../lib/api";
 import { Suspense } from "react";
 
-import Chatbot from "../components/Chatbot";
-import FeedbackWidget from "../components/FeedbackWidget";
-import ConnectWithUsForm from "../components/ConnectWithUsForm";
+import ClientWidgets from "../components/ClientWidgets";
 
+import ConnectWithUsForm from "../components/ConnectWithUsForm";
+import LeadMagnet from "../components/LeadMagnet";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import ConditionalPricing from "../components/ConditionalPricing";
@@ -33,12 +33,12 @@ async function FeaturedCourses() {
           return (
             <Link href={`/courses/${attrs.uuid || course.id}`} key={course.id} className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative glass-panel p-8 h-full rounded-2xl border border-gray-800/80 bg-[#0a0a0a]/80 hover:bg-[#111]/90 transition-all duration-300">
-                <div className="inline-flex border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-mono px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+              <div className="relative glass-panel p-8 h-full rounded-2xl bg-card-bg/80 hover:bg-card-bg transition-all duration-300">
+                <div className="inline-flex border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-mono px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
                   {attrs.level || 'Standard'}
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-cyan-400 transition-colors">{attrs.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{attrs.description}</p>
+                <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{attrs.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">{attrs.description}</p>
               </div>
             </Link>
           );
@@ -55,10 +55,10 @@ function MockupTerminal() {
       <div className="absolute -inset-1 bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-500 rounded-[2rem] blur-2xl opacity-20 animate-pulse"></div>
       
       {/* Main Mockup Container */}
-      <div className="relative glass-panel rounded-[2rem] border border-gray-700/50 bg-[#050505]/90 shadow-2xl overflow-hidden flex flex-col md:flex-row transform transition-transform hover:scale-[1.01] duration-500">
+      <div className="relative glass-panel rounded-[2rem] bg-card-bg shadow-2xl overflow-hidden flex flex-col md:flex-row transform transition-transform hover:scale-[1.01] duration-500">
         
         {/* Sidebar Explorer */}
-        <div className="w-full md:w-64 border-r border-gray-800/60 bg-[#0a0a0a]/50 p-4 hidden md:flex flex-col">
+        <div className="w-full md:w-64 border-r border-card-border bg-background/50 p-4 hidden md:flex flex-col">
           <div className="flex gap-2 mb-6 px-2">
             <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
             <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.6)]"></div>
@@ -66,19 +66,19 @@ function MockupTerminal() {
           </div>
           <div className="text-xs font-mono font-semibold text-gray-500 mb-4 px-2 tracking-widest uppercase">Sandboxes</div>
           <div className="space-y-1">
-            <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-500/10 text-indigo-300 font-mono text-sm border border-indigo-500/20">
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 font-mono text-sm border border-indigo-500/20">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
               <span>VBox_Cluster_01</span>
             </div>
-            <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 font-mono text-sm hover:bg-white/5 cursor-pointer">
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 font-mono text-sm hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
               <span>GPU_Sandbox_A</span>
             </div>
           </div>
           
-          <div className="mt-auto pt-4 border-t border-gray-800/60">
-            <div className="flex items-center gap-2 px-2 text-xs font-mono text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="mt-auto pt-4 border-t border-card-border">
+            <div className="flex items-center gap-2 px-2 text-xs font-mono text-emerald-600 dark:text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span>
               Virtual Box Connected
             </div>
           </div>
@@ -87,17 +87,17 @@ function MockupTerminal() {
         {/* Right Content Area */}
         <div className="flex-1 flex flex-col h-[500px]">
           {/* Editor Tabs */}
-          <div className="flex items-center bg-[#111]/80 border-b border-gray-800/60 overflow-x-auto">
-            <div className="px-6 py-3 border-r border-gray-800/60 border-t-2 border-t-cyan-400 bg-[#050505] text-cyan-300 font-mono text-sm">
+          <div className="flex items-center bg-card-bg/80 border-b border-card-border overflow-x-auto">
+            <div className="px-6 py-3 border-r border-card-border border-t-2 border-t-cyan-500 bg-background text-cyan-600 dark:text-cyan-300 font-mono text-sm">
               distributed_training.py
             </div>
-            <div className="px-6 py-3 border-r border-gray-800/60 text-gray-500 font-mono text-sm hover:bg-[#1a1a1a] cursor-pointer">
+            <div className="px-6 py-3 border-r border-card-border text-gray-500 font-mono text-sm hover:bg-gray-100 dark:hover:bg-[#1a1a1a] cursor-pointer">
               docker-compose.yml
             </div>
           </div>
           
           {/* Code Area */}
-          <div className="flex-1 p-6 font-mono text-sm overflow-auto text-gray-300 leading-relaxed bg-[#050505]">
+          <div className="flex-1 p-6 font-mono text-sm overflow-auto text-gray-800 dark:text-gray-300 leading-relaxed bg-background">
             <div><span className="text-pink-500">import</span> torch</div>
             <div><span className="text-pink-500">import</span> torch.distributed <span className="text-pink-500">as</span> dist</div>
             <br/>
@@ -155,48 +155,48 @@ function PricingSection() {
     <div className="w-full max-w-7xl mx-auto mt-40 mb-12 text-left z-10 relative px-6 md:px-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
       <div className="text-center mb-16">
         <h2 className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-500 mb-4">Choose Your Plan</h2>
-        <p className="text-gray-400 text-lg max-w-2xl mx-auto">Flexible pricing for students, professionals, and entire organizations.</p>
+        <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">Flexible pricing for students, professionals, and entire organizations.</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
         {/* Free Plan */}
-        <div className="glass-panel p-8 rounded-3xl border border-gray-800/80 bg-[#0a0a0a]/80 hover:-translate-y-2 transition-transform duration-500">
-          <h3 className="text-2xl font-bold text-white mb-2">Free</h3>
-          <div className="text-4xl font-black text-white mb-6">₹0<span className="text-lg text-gray-500 font-medium">/month</span></div>
-          <ul className="space-y-4 mb-8 text-gray-400">
+        <div className="glass-panel p-8 rounded-3xl bg-card-bg hover:-translate-y-2 transition-transform duration-500">
+          <h3 className="text-2xl font-bold text-foreground mb-2">Free</h3>
+          <div className="text-4xl font-black text-foreground mb-6">₹0<span className="text-lg text-gray-500 font-medium">/month</span></div>
+          <ul className="space-y-4 mb-8 text-gray-600 dark:text-gray-400">
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Basic Sandboxes</li>
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Community Support</li>
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Standard Curriculum</li>
-            <li className="flex items-center gap-3 text-gray-600"><span className="text-gray-700">×</span> GPU Acceleration</li>
+            <li className="flex items-center gap-3 text-gray-400 dark:text-gray-600"><span className="text-gray-500 dark:text-gray-700">×</span> GPU Acceleration</li>
           </ul>
-          <button className="w-full py-3 rounded-full font-bold border border-gray-700 text-white hover:bg-gray-800 transition-colors">Get Started</button>
+          <button className="w-full py-3 rounded-full font-bold border border-card-border text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Get Started</button>
         </div>
 
         {/* 299 Plan */}
-        <div className="glass-panel p-10 rounded-3xl border border-cyan-500/50 bg-gradient-to-b from-[#111] to-[#050505] relative transform md:scale-105 shadow-[0_0_30px_rgba(6,182,212,0.15)] z-10 hover:-translate-y-2 transition-transform duration-500">
+        <div className="glass-panel p-10 rounded-3xl border-cyan-500/50 bg-gradient-to-b from-card-bg to-background relative transform md:scale-105 shadow-[0_0_30px_rgba(6,182,212,0.15)] z-10 hover:-translate-y-2 transition-transform duration-500">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg whitespace-nowrap">Most Popular</div>
-          <h3 className="text-2xl font-bold text-white mb-2">Pro</h3>
-          <div className="text-5xl font-black text-cyan-400 mb-6">₹299<span className="text-lg text-gray-500 font-medium">/month</span></div>
-          <ul className="space-y-4 mb-8 text-gray-300">
-            <li className="flex items-center gap-3"><span className="text-cyan-400">✓</span> Advanced Sandboxes</li>
-            <li className="flex items-center gap-3"><span className="text-cyan-400">✓</span> Priority Support</li>
-            <li className="flex items-center gap-3"><span className="text-cyan-400">✓</span> Full Curriculum Access</li>
-            <li className="flex items-center gap-3"><span className="text-cyan-400">✓</span> 50hrs GPU Acceleration</li>
+          <h3 className="text-2xl font-bold text-foreground mb-2">Pro</h3>
+          <div className="text-5xl font-black text-cyan-500 dark:text-cyan-400 mb-6">₹299<span className="text-lg text-gray-500 font-medium">/month</span></div>
+          <ul className="space-y-4 mb-8 text-gray-600 dark:text-gray-300">
+            <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> Advanced Sandboxes</li>
+            <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> Priority Support</li>
+            <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> Full Curriculum Access</li>
+            <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> 50hrs GPU Acceleration</li>
           </ul>
           <CheckoutButton amount={299} planName="Pro" />
         </div>
 
         {/* Enterprise Plan */}
-        <div className="glass-panel p-8 rounded-3xl border border-gray-800/80 bg-[#0a0a0a]/80 hover:-translate-y-2 transition-transform duration-500">
-          <h3 className="text-2xl font-bold text-white mb-2">Enterprise Level</h3>
-          <div className="text-4xl font-black text-white mb-6">Custom</div>
-          <ul className="space-y-4 mb-8 text-gray-400">
+        <div className="glass-panel p-8 rounded-3xl bg-card-bg hover:-translate-y-2 transition-transform duration-500">
+          <h3 className="text-2xl font-bold text-foreground mb-2">Enterprise Level</h3>
+          <div className="text-4xl font-black text-foreground mb-6">Custom</div>
+          <ul className="space-y-4 mb-8 text-gray-600 dark:text-gray-400">
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Unlimited Sandboxes</li>
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Dedicated Account Manager</li>
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Custom Curriculum</li>
             <li className="flex items-center gap-3"><span className="text-cyan-500">✓</span> Unlimited GPU Acceleration</li>
           </ul>
-          <button className="w-full py-3 rounded-full font-bold border border-gray-700 text-white hover:bg-gray-800 transition-colors">Contact Sales</button>
+          <button className="w-full py-3 rounded-full font-bold border border-card-border text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Contact Sales</button>
         </div>
       </div>
     </div>
@@ -208,7 +208,7 @@ export default async function Home() {
   const isPro = session?.user?.isPro;
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-[#030303]">
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
       {/* Dynamic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-600 rounded-full mix-blend-screen filter blur-[150px] opacity-10 animate-pulse"></div>
@@ -232,8 +232,8 @@ export default async function Home() {
           </span>
         </h1>
         
-        <p className="text-gray-400 text-xl md:text-2xl max-w-3xl mb-12 font-medium animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          Instantly spin up GPU-accelerated sandboxes. Dive into our exclusive M.Tech & PhD environments directly from your browser.
+        <p className="text-gray-600 dark:text-gray-400 text-xl md:text-2xl max-w-3xl mb-12 font-medium animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          Instantly spin up GPU-accelerated sandboxes, experience interactive 3D WebGL simulations, and ace your placements with AI Voice Mock Interviews.
         </p>
 
         <div className="flex items-center gap-6 mb-12 animate-fade-in" style={{ animationDelay: '0.25s' }}>
@@ -246,7 +246,7 @@ export default async function Home() {
           </Link>
           <Link 
             href="/courses" 
-            className="bg-gray-800/50 hover:bg-gray-800 border border-gray-700 text-white px-8 py-4 rounded-full font-bold transition-all hover:-translate-y-1"
+            className="bg-card-bg hover:bg-card-border border border-card-border text-foreground px-8 py-4 rounded-full font-bold transition-all hover:-translate-y-1"
           >
             Explore Labs
           </Link>
@@ -259,29 +259,29 @@ export default async function Home() {
 
         {/* Feature Highlights Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-40 w-full max-w-7xl px-6 md:px-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border border-gray-800/80 bg-gradient-to-br from-[#111] to-[#0a0a0a]">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-8 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background">
+            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center mb-8 border border-red-500/20 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">Isolated Virtual Boxes</h3>
-            <p className="text-gray-400 text-[1.05rem] leading-relaxed">Dedicated Linux instances running in perfect isolation. Install dependencies, run root commands, and break things safely.</p>
+            <h3 className="text-2xl font-bold mb-4 text-foreground">AI Voice Mock Interviews</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Ace your placements. Our AI acts as a technical recruiter, dynamically listening to your microphone and verbally grilling you on your code.</p>
           </div>
           
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-[#0a0a0a] relative overflow-hidden">
+          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-background relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 mix-blend-overlay filter blur-[80px] opacity-30"></div>
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-8 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-8 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">GPU-Accelerated Sandboxes</h3>
-            <p className="text-gray-400 text-[1.05rem] leading-relaxed">Instantly attach NVIDIA V100/A100 GPUs to your sandbox. Train massive transformer models without leaving your browser window.</p>
+            <h3 className="text-2xl font-bold mb-4 text-foreground">Interactive 3D WebGL Labs</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Experience immersive education. Render complex Quantum Physics models and Molecular Biological structures dynamically in real-time 3D.</p>
           </div>
 
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border border-gray-800/80 bg-gradient-to-br from-[#111] to-[#0a0a0a]">
-            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-8 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background">
+            <div className="w-14 h-14 rounded-2xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-8 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">Zero-Setup Environments</h3>
-            <p className="text-gray-400 text-[1.05rem] leading-relaxed">Skip the Dockerfiles and Conda environments. One click boots up pre-configured environments for PyTorch, TensorFlow, and more.</p>
+            <h3 className="text-2xl font-bold mb-4 text-foreground">Live Multiplayer Syncing</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Don't code alone. Invite your peers or tutors to your virtual lab and collaborate simultaneously with real-time Google Docs style syncing.</p>
           </div>
         </div>
 
@@ -295,14 +295,16 @@ export default async function Home() {
           </ConditionalPricing>
         )}
 
+        {/* Lead Magnet: Free 7-Day Sandbox Trial */}
+        <LeadMagnet />
+
         {/* Connect With Us Form */}
         <ConnectWithUsForm />
 
         {/* Footer padding */}
         <div className="h-32"></div>
       </main>
-      <Chatbot />
-      <FeedbackWidget />
+      <ClientWidgets />
     </div>
   );
 }

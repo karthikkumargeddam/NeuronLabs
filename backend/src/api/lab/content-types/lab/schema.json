@@ -4,7 +4,7 @@
     "info": {
         "singularName": "lab",
         "pluralName": "labs",
-        "displayName": "Virtual Lab",
+        "displayName": "Labs",
         "description": "Virtual environments for labs"
     },
     "options": {

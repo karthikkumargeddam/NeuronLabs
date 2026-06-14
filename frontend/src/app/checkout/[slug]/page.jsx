@@ -49,7 +49,8 @@ export default function CheckoutPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:1337/api/payment/verify", {
+      // 1. Send Notification to Strapi Backend for Manual Telegram Verification
+      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/payment/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,9 +66,9 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (data.success) {
-        setPaymentState("pending"); // Show pending state instead of redirecting
+        setPaymentState("pending"); // Hangs on pending until admin approves via Telegram
       } else {
-        setError(data.error?.message || data.message || "Verification failed. Please check your transaction ID.");
+        setError(data.error?.message || data.message || data.error || "Verification failed. Please check your transaction ID.");
       }
     } catch (err) {
       console.error(err);
@@ -77,6 +78,7 @@ export default function CheckoutPage() {
     }
   };
 
+  // WebSocket handler restored for real-time Telegram approval
   useEffect(() => {
     if (socket && paymentState === "pending") {
        const handler = async (data) => {

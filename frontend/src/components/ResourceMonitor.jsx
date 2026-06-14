@@ -3,6 +3,51 @@
 import React, { useState, useEffect } from "react";
 import { Activity, Cpu, Server, Database } from "lucide-react";
 
+const CircularProgress = ({ value, color, label, icon: Icon }) => {
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (value / 100) * circumference;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative flex items-center justify-center w-24 h-24 mb-3">
+        <svg className="transform -rotate-90 w-24 h-24">
+          {/* Background circle */}
+          <circle
+            cx="48"
+            cy="48"
+            r={radius}
+            stroke="currentColor"
+            strokeWidth="6"
+            fill="transparent"
+            className="text-neutral-800"
+          />
+          {/* Progress circle */}
+          <circle
+            cx="48"
+            cy="48"
+            r={radius}
+            stroke="currentColor"
+            strokeWidth="6"
+            fill="transparent"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            className={`${color} transition-all duration-1000 ease-out`}
+            style={{ filter: `drop-shadow(0 0 6px ${color === 'text-cyan-400' ? '#22d3ee' : color === 'text-purple-500' ? '#a855f7' : color === 'text-amber-400' ? '#fbbf24' : '#4ade80'})` }}
+          />
+        </svg>
+        <div className="absolute flex flex-col items-center justify-center text-white">
+          <span className="text-lg font-bold">{Math.round(value)}%</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5 text-neutral-400 text-sm font-medium">
+        <Icon className="w-4 h-4" />
+        {label}
+      </div>
+    </div>
+  );
+};
+
 export default function ResourceMonitor() {
   const [metrics, setMetrics] = useState({
     gpu: 42,
@@ -24,51 +69,6 @@ export default function ResourceMonitor() {
 
     return () => clearInterval(interval);
   }, []);
-
-  const CircularProgress = ({ value, color, label, icon: Icon }) => {
-    const radius = 36;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (value / 100) * circumference;
-
-    return (
-      <div className="flex flex-col items-center">
-        <div className="relative flex items-center justify-center w-24 h-24 mb-3">
-          <svg className="transform -rotate-90 w-24 h-24">
-            {/* Background circle */}
-            <circle
-              cx="48"
-              cy="48"
-              r={radius}
-              stroke="currentColor"
-              strokeWidth="6"
-              fill="transparent"
-              className="text-neutral-800"
-            />
-            {/* Progress circle */}
-            <circle
-              cx="48"
-              cy="48"
-              r={radius}
-              stroke="currentColor"
-              strokeWidth="6"
-              fill="transparent"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              className={`${color} transition-all duration-1000 ease-out`}
-              style={{ filter: `drop-shadow(0 0 6px ${color === 'text-cyan-400' ? '#22d3ee' : color === 'text-purple-500' ? '#a855f7' : color === 'text-amber-400' ? '#fbbf24' : '#4ade80'})` }}
-            />
-          </svg>
-          <div className="absolute flex flex-col items-center justify-center text-white">
-            <span className="text-lg font-bold">{Math.round(value)}%</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 text-neutral-400 text-sm font-medium">
-          <Icon className="w-4 h-4" />
-          {label}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="bg-neutral-900/60 backdrop-blur-xl rounded-3xl border border-white/5 p-8 relative overflow-hidden group hover:border-white/10 transition-colors duration-500">
@@ -107,7 +107,8 @@ export default function ResourceMonitor() {
           {/* Decorative bars simulating a graph */}
           <div className="w-full flex items-end justify-between px-2 gap-1 h-12 opacity-60">
             {[...Array(30)].map((_, i) => {
-              const height = 20 + Math.random() * 60;
+              // Use pseudo-random deterministic heights to satisfy React purity rules
+              const height = 20 + (((i * 17) % 10) * 6);
               return (
                 <div 
                   key={i} 

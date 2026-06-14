@@ -24,8 +24,8 @@ exports.default = {
         const { Server } = require("socket.io");
         const io = new Server(strapi.server.httpServer, {
             cors: {
-                origin: process.env.FRONTEND_URL || "http://localhost:3000",
-                methods: ["GET", "POST", "PUT", "DELETE"],
+                origin: ["http://localhost:3000", "https://neuron-frontend-o7em.vercel.app"],
+                methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 credentials: true,
             },
         });
@@ -38,12 +38,41 @@ exports.default = {
                 console.log(`Socket ${socket.id} joined room user_${userId}`);
             });
 
+            // Multiplayer Collaboration Events
+            socket.on("join-lab", (labId) => {
+                socket.join(`lab_${labId}`);
+                console.log(`Socket ${socket.id} joined lab_${labId}`);
+                // Notify others in the lab
+                socket.to(`lab_${labId}`).emit("user-joined", { id: socket.id });
+            });
+
+            socket.on("code-change", (data) => {
+                // data: { labId, code }
+                socket.to(`lab_${data.labId}`).emit("code-update", data.code);
+            });
+
             socket.on("disconnect", () => {
                 console.log("Client disconnected:", socket.id);
             });
         });
 
         strapi.io = io; // Attach to strapi instance to use in services/controllers
+
+        // Initialize Yjs WebSocket Server
+        const { WebSocketServer } = require('ws');
+        const { setupWSConnection } = require('y-websocket/bin/utils');
+
+        const wss = new WebSocketServer({ noServer: true });
+
+        strapi.server.httpServer.on('upgrade', (request, socket, head) => {
+            if (request.url.startsWith('/yjs')) {
+                wss.handleUpgrade(request, socket, head, (ws) => {
+                    wss.emit('connection', ws, request);
+                });
+            }
+        });
+
+        wss.on('connection', setupWSConnection);
 
         // FORCE SEED RE-RUN
         await generateLabs150(strapi);
@@ -52,6 +81,10 @@ exports.default = {
         console.log("=======================================================\n");
 
         await seedAdvancedLabs(strapi);
+
+        // Run the cloud seeder
+        const cloudSeeder = require('./cloud_seeder.js');
+        await cloudSeeder(strapi);
 
         // Seed pages
         const pages = [

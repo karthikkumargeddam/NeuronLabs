@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leaderboard_entries",
+  "info": {
+    "singularName": "leaderboard-entry",
+    "pluralName": "leaderboard-entries",
+    "displayName": "Leaderboard Entry",
+    "description": "User rankings for the global arena leaderboard"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "score": { "type": "integer", "default": 0 },
+    "rank_title": { "type": "string", "default": "Novice" },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

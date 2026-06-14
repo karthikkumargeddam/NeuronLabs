@@ -21,7 +21,7 @@ export default function SignUpPage() {
     setError("");
 
     try {
-      const res = await fetch("http://127.0.0.1:1337/api/auth/local/register", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/auth/local/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -98,8 +98,8 @@ function generateUniqueContent(topic, domainCategory) {
 
 async function generateLabs150(strapi) {
   try {
-    const existingLabs = await strapi.documents('api::lab.lab').findMany({ limit: 1 });
-    if (existingLabs && existingLabs.length > 0) {
+    const existingLabs = await strapi.documents('api::lab.lab').findMany({ limit: 100 });
+    if (existingLabs && existingLabs.length >= 100) {
       console.log("Labs already exist. Skipping seed.");
       return;
     }
@@ -132,9 +132,14 @@ async function generateLabs150(strapi) {
   let successCount = 0;
   for (const lab of allLabs) {
     try {
+      const existing = await strapi.documents('api::lab.lab').findMany({
+        filters: { title: lab.title },
+        limit: 1
+      });
+      if (existing && existing.length > 0) continue;
+
       await strapi.documents('api::lab.lab').create({
-        data: lab,
-        status: 'published'
+        data: lab
       });
       successCount++;
       if (successCount % 20 === 0) {

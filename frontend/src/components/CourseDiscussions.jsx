@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 
 export default function CourseDiscussions({ courseId }) {
@@ -10,13 +10,9 @@ export default function CourseDiscussions({ courseId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchComments();
-  }, [courseId]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:1337/api/comments/api::course.course:${courseId}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/comments/api::course.course:${courseId}`);
       if (res.ok) {
         const data = await res.json();
         // The plugin usually returns an array or paginated object, adapting standard format
@@ -28,7 +24,11 @@ export default function CourseDiscussions({ courseId }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [courseId, fetchComments]);
 
   const handlePostComment = async (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ export default function CourseDiscussions({ courseId }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:1337/api/comments/api::course.course:${courseId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/comments/api::course.course:${courseId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

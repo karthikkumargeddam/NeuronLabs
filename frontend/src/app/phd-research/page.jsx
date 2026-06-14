@@ -8,7 +8,7 @@ async function PhdResearchList() {
     populate: '*', 
     sort: ['createdAt:desc'],
     pagination: { limit: 300 }
-  }, { cache: 'no-store' });
+  }, { next: { revalidate: 60 } });
   
   // Filter in JS because Strapi SQLite $contains might be bugged
   let labs = response?.data || [];

@@ -8,15 +8,41 @@ import LabWorkspace from "../../../components/LabWorkspace";
 
 async function getLabData(uuid) {
   try {
-    const response = await fetchAPI('/api/labs', {
-      filters: { uuid: { $eq: uuid } },
+    // Try regular labs first
+    let response = await fetchAPI('/api/labs', {
+      filters: { 
+        $or: [
+          { uuid: { $eq: uuid } },
+          { documentId: { $eq: uuid } }
+        ]
+      },
       populate: '*'
-    }, { cache: 'no-store' });
+    }, { next: { revalidate: 60 } });
     
     if (response?.data?.length > 0) {
       const lab = response.data[0];
       return lab.attributes || lab;
     }
+
+    // Try advanced labs (sandboxes)
+    response = await fetchAPI('/api/sandboxes', {
+      filters: { documentId: { $eq: uuid } },
+      populate: '*'
+    }, { next: { revalidate: 60 } });
+
+    if (response?.data?.length > 0) {
+      const lab = response.data[0];
+      const attrs = lab.attributes || lab;
+      // Map sandbox fields to expected lab fields
+      return {
+        title: attrs.title,
+        level: 'PhD',
+        codeSnippet: attrs.code_content,
+        terminalOutput: attrs.terminalOutput,
+        visualization: attrs.visualization
+      };
+    }
+
   } catch (e) {
     console.error("Failed to fetch lab from Strapi", e);
   }

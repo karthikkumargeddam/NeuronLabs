@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Mermaid from "./Mermaid";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users, Mic, Activity } from "lucide-react";
+import ThreeDViewer from "./ThreeDViewer";
+import { io } from "socket.io-client";
+import MockInterviewModal from "./MockInterviewModal";
 
 export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput, visualization }) {
   const formatText = (text) => text ? text.replace(/\\n/g, '\n') : "";
@@ -14,6 +17,115 @@ export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput
   const [isExecuting, setIsExecuting] = useState(false);
   const [isCompilerReady, setIsCompilerReady] = useState(false);
   const [pyodideInstance, setPyodideInstance] = useState(null);
+
+  // Multiplayer Collaboration
+  const [socket, setSocket] = useState(null);
+  const [liveUsers, setLiveUsers] = useState(1);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  useEffect(() => {
+    // Determine the lab ID from the URL path
+    const labId = window.location.pathname.split('/').pop() || 'default-lab';
+    
+    // Connect to Strapi WebSocket Server
+    const backendUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+    const newSocket = io(backendUrl);
+
+    newSocket.on("connect", () => {
+      newSocket.emit("join-lab", labId);
+    });
+
+    newSocket.on("user-joined", () => {
+      setLiveUsers(prev => prev + 1);
+    });
+
+    newSocket.on("code-update", (newCode) => {
+      setIsSyncing(true);
+      setCode(newCode);
+      // Wait a moment to avoid emitting our own update back
+      setTimeout(() => setIsSyncing(false), 100);
+    });
+
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
+  }, []);
+
+  const handleCodeChange = (e) => {
+    const newCode = e.target.value;
+    setCode(newCode);
+    
+    if (socket && !isSyncing) {
+      const labId = window.location.pathname.split('/').pop() || 'default-lab';
+      socket.emit("code-change", { labId, code: newCode });
+    }
+  };
+
+  const getThreeDType = () => {
+    const lowerCode = code.toLowerCase();
+    if (lowerCode.includes('quantum') || lowerCode.includes('qiskit') || lowerCode.includes('qubit')) return 'quantum_sphere';
+    if (lowerCode.includes('protein') || lowerCode.includes('molecule') || lowerCode.includes('dna') || lowerCode.includes('biology')) return 'molecule';
+    if (lowerCode.includes('astro') || lowerCode.includes('space') || lowerCode.includes('blackhole')) return 'astrophysics';
+    return null;
+  };
+
+  const [force3D, setForce3D] = useState(false);
+  const autoThreeDType = getThreeDType();
+  const shouldRender3D = force3D || (!plotImage && !videoSrc && autoThreeDType);
+
+  // AI Tutor State
+  const [isAIOpen, setIsAIOpen] = useState(false);
+  const [aiChat, setAiChat] = useState([{ role: 'assistant', content: "Hello! I'm your NeuronLabs PhD AI Tutor. I can see your Python code. How can I assist your research today?" }]);
+  const [aiInput, setAiInput] = useState("");
+  const [isAiTyping, setIsAiTyping] = useState(false);
+  
+  // Mock Interview State
+  const [isInterviewOpen, setIsInterviewOpen] = useState(false);
+
+  // Profiler State
+  const [isProfiling, setIsProfiling] = useState(false);
+  const [profilerData, setProfilerData] = useState(null);
+
+  const handleProfileCode = async () => {
+    setIsProfiling(true);
+    try {
+      const res = await fetch('/api/code-profiler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      setProfilerData(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsProfiling(false);
+    }
+  };
+
+  const handleAskAI = async (e) => {
+    e?.preventDefault();
+    if (!aiInput.trim()) return;
+    const currentInput = aiInput;
+    const newChat = [...aiChat, { role: 'user', content: currentInput }];
+    setAiChat(newChat);
+    setAiInput("");
+    setIsAiTyping(true);
+
+    try {
+      const res = await fetch('/api/ai-tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: currentInput, code, language: 'python' })
+      });
+      const data = await res.json();
+      setAiChat([...newChat, { role: 'assistant', content: data.reply }]);
+    } catch (err) {
+      setAiChat([...newChat, { role: 'assistant', content: "[Error] Connection to AI Tutor core failed." }]);
+    } finally {
+      setIsAiTyping(false);
+    }
+  };
 
   React.useEffect(() => {
     // Dynamically load Pyodide
@@ -122,11 +234,11 @@ export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput
       <div className="flex-grow flex flex-col lg:flex-row gap-4 overflow-hidden">
         
         {/* Dynamic Visualization */}
-        {(visualization || plotImage || videoSrc) && (
+        {(visualization || plotImage || videoSrc || shouldRender3D) && (
            <div className="flex-1 flex flex-col relative glass-panel border-[#333] bg-[#050505] p-2 overflow-y-auto custom-scrollbar">
              <div className="absolute top-4 left-4 bg-[#111] px-2 py-1 text-xs font-mono text-cyan-500 z-10 border border-cyan-500/30 rounded flex items-center gap-4">
-               <span>{videoSrc ? "Video Simulation" : plotImage ? "Python Matplotlib Output" : "Architecture Overview"}</span>
-               {videoSrc && (
+               <span>{shouldRender3D ? "WebGL 3D Simulation" : videoSrc ? "Video Simulation" : plotImage ? "Python Matplotlib Output" : "Architecture Overview"}</span>
+               {videoSrc && !shouldRender3D && (
                  <button 
                    onClick={toggleVideoPlayback}
                    className="hover:text-cyan-300 transition-colors bg-[#222] px-2 rounded"
@@ -135,8 +247,30 @@ export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput
                  </button>
                )}
              </div>
-             <div className="flex-grow flex items-center justify-center p-8 mt-6 w-full relative">
-               {ytEmbedUrl ? (
+             <div className="absolute top-4 right-4 z-10">
+               {autoThreeDType && !shouldRender3D && !force3D && (
+                 <button 
+                   onClick={() => setForce3D(true)}
+                   className="bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded text-xs transition-colors"
+                 >
+                   View 3D Simulation
+                 </button>
+               )}
+               {force3D && (
+                 <button 
+                   onClick={() => setForce3D(false)}
+                   className="bg-[#222] hover:bg-[#333] text-gray-400 border border-[#444] px-3 py-1 rounded text-xs transition-colors"
+                 >
+                   Show 2D Output
+                 </button>
+               )}
+             </div>
+             <div className={`flex-grow flex items-center justify-center mt-6 w-full relative ${shouldRender3D ? 'p-0' : 'p-8'}`}>
+               {shouldRender3D ? (
+                 <div className="w-full h-full min-h-[400px] rounded border border-[#333] overflow-hidden">
+                   <ThreeDViewer type={autoThreeDType || 'quantum_sphere'} />
+                 </div>
+               ) : ytEmbedUrl ? (
                  <iframe 
                    ref={iframeRef}
                    src={ytEmbedUrl} 
@@ -158,30 +292,129 @@ export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput
         {/* Code Editor */}
         <div className={`flex-1 w-full glass-panel border-[#333] p-6 font-mono text-sm bg-[#050505] relative flex flex-col overflow-hidden`}>
           <div className="flex justify-between items-center mb-4 flex-shrink-0">
-            <div className="bg-[#222] px-3 py-1 text-xs text-gray-500 rounded">Interactive Editor</div>
-            <button 
-              onClick={handleRunCode}
-              disabled={isExecuting || !isCompilerReady}
-              className={`px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${
-                (isExecuting || !isCompilerReady)
-                  ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
-                  : "bg-green-600 hover:bg-green-500 text-white shadow-[0_0_15px_rgba(22,163,74,0.4)]"
-              }`}
-            >
-              {(isExecuting || !isCompilerReady) && (
-                <Loader2 className="w-4 h-4 animate-spin" />
+            <div className="flex items-center gap-3">
+              <div className="bg-[#222] px-3 py-1 text-xs text-gray-500 rounded">Interactive Editor</div>
+              {liveUsers > 1 && (
+                <div className="bg-green-900/30 border border-green-500/30 text-green-400 px-3 py-1 rounded text-xs flex items-center gap-2 animate-pulse">
+                  <Users className="w-3 h-3" />
+                  {liveUsers} Researchers Live
+                </div>
               )}
-              {isExecuting ? 'Running...' : (!isCompilerReady ? 'Loading Compiler...' : 'Run Code')}
-            </button>
+            </div>
+            <div className="flex gap-4">
+              <button 
+                onClick={handleProfileCode}
+                disabled={isProfiling}
+                className="px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 bg-[#222] hover:bg-[#333] border border-[#444] text-cyan-400"
+              >
+                {isProfiling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Activity className="w-4 h-4" />}
+                Profile Code
+              </button>
+              <button 
+                onClick={handleRunCode}
+                disabled={isExecuting || !isCompilerReady}
+                className={`px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${
+                  (isExecuting || !isCompilerReady)
+                    ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
+                    : "bg-green-600 hover:bg-green-500 text-white shadow-[0_0_15px_rgba(22,163,74,0.4)]"
+                }`}
+              >
+                {(isExecuting || !isCompilerReady) && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                {isExecuting ? 'Running...' : (!isCompilerReady ? 'Loading Compiler...' : 'Run Code')}
+              </button>
+              <button 
+                onClick={() => setIsAIOpen(!isAIOpen)}
+                className="px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]"
+              >
+                ✨ Ask AI Tutor
+              </button>
+              <button 
+                onClick={() => setIsInterviewOpen(true)}
+                className="px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)]"
+              >
+                <Mic className="w-4 h-4" /> Mock Interview
+              </button>
+            </div>
           </div>
           
           <textarea
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="w-full flex-grow bg-transparent text-gray-300 resize-none outline-none whitespace-pre overflow-y-auto custom-scrollbar"
+            onChange={handleCodeChange}
+            className="w-full flex-grow bg-transparent text-gray-300 resize-none outline-none whitespace-pre overflow-y-auto custom-scrollbar relative z-10"
             spellCheck="false"
           />
+
+          {/* Profiler Overlay */}
+          {profilerData && (
+            <div className="absolute bottom-6 right-6 w-[400px] bg-[#050505] border border-cyan-500/30 rounded-lg p-4 shadow-2xl z-20 animate-fade-in flex flex-col gap-3">
+              <div className="flex justify-between items-center border-b border-[#333] pb-2">
+                <div className="flex items-center gap-2 text-cyan-400">
+                  <Activity className="w-4 h-4" />
+                  <span className="font-bold text-xs uppercase tracking-widest">Big-O Analyzer</span>
+                </div>
+                <button onClick={() => setProfilerData(null)} className="text-gray-500 hover:text-white">✕</button>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="bg-[#111] p-3 rounded border border-[#333] w-[48%] text-center">
+                  <p className="text-xs text-gray-500 uppercase mb-1">Time</p>
+                  <p className="text-xl font-bold text-white font-mono">{profilerData.timeComplexity}</p>
+                </div>
+                <div className="bg-[#111] p-3 rounded border border-[#333] w-[48%] text-center">
+                  <p className="text-xs text-gray-500 uppercase mb-1">Space</p>
+                  <p className="text-xl font-bold text-white font-mono">{profilerData.spaceComplexity}</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed bg-cyan-900/10 p-3 rounded border border-cyan-500/20">
+                {profilerData.explanation}
+              </p>
+            </div>
+          )}
         </div>
+
+        {/* AI Tutor Panel */}
+        {isAIOpen && (
+          <div className="w-[350px] flex-shrink-0 glass-panel border-[#333] bg-[#050505] flex flex-col overflow-hidden animate-slide-in-right relative z-20">
+            <div className="bg-[#111] border-b border-[#333] p-3 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">✨</span>
+                <span className="font-bold text-purple-400 text-sm tracking-widest uppercase">PhD AI Tutor</span>
+              </div>
+              <button onClick={() => setIsAIOpen(false)} className="text-gray-500 hover:text-white">✕</button>
+            </div>
+            
+            <div className="flex-grow p-4 overflow-y-auto custom-scrollbar flex flex-col gap-4 text-sm">
+              {aiChat.map((msg, idx) => (
+                <div key={idx} className={`p-3 rounded-lg ${msg.role === 'assistant' ? 'bg-purple-900/20 border border-purple-500/30 text-purple-100' : 'bg-[#222] border border-[#333] text-gray-200 self-end'}`}>
+                  {msg.content}
+                </div>
+              ))}
+              {isAiTyping && (
+                <div className="p-3 rounded-lg bg-purple-900/20 border border-purple-500/30 text-purple-400 w-16 flex justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleAskAI} className="p-3 bg-[#111] border-t border-[#333] flex gap-2">
+              <input 
+                type="text" 
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                placeholder="Ask about your code..." 
+                className="flex-grow bg-[#222] border border-[#333] rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+              />
+              <button 
+                type="submit" 
+                disabled={isAiTyping || !aiInput.trim()}
+                className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-3 py-2 rounded transition-colors"
+              >
+                &rarr;
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Terminal */}
@@ -198,6 +431,12 @@ export default function LabWorkspace({ initialCodeSnippet, initialTerminalOutput
           </div>
         )}
       </div>
+
+      <MockInterviewModal 
+        isOpen={isInterviewOpen} 
+        onClose={() => setIsInterviewOpen(false)} 
+        code={code} 
+      />
     </div>
   );
 }

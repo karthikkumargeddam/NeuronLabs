@@ -2,7 +2,7 @@ import ReactMarkdown from 'react-markdown';
 
 async function getPageContent(slug) {
   try {
-    const res = await fetch(`http://127.0.0.1:1337/api/pages?filters[slug][$eq]=${slug}`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/pages?filters[slug][$eq]=${slug}`, { next: { revalidate: 60 } });
     const data = await res.json();
     return data?.data?.[0]?.content || 'Content not found.';
   } catch (error) {

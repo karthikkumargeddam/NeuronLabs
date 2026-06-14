@@ -50,7 +50,7 @@ export default function SandboxDetailPage() {
   useEffect(() => {
     const fetchLab = async () => {
       try {
-        const res = await fetch(`http://localhost:1337/api/sandboxes?filters[slug][$eq]=${slug}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/sandboxes?filters[slug][$eq]=${slug}`);
         if (!res.ok) throw new Error("Failed to fetch sandbox");
         const data = await res.json();
         
@@ -61,7 +61,7 @@ export default function SandboxDetailPage() {
           });
         } else {
           // Fallback if slug wasn't matched but it matches documentId
-          const resFallback = await fetch(`http://localhost:1337/api/sandboxes?filters[documentId][$eq]=${slug}`);
+          const resFallback = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/sandboxes?filters[documentId][$eq]=${slug}`);
           const fallbackData = await resFallback.json();
           if (fallbackData.data && fallbackData.data.length > 0) {
             setLab({

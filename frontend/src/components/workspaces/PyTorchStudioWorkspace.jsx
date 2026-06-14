@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 export default function PyTorchStudioWorkspace() {
-  const [epoch, setEpoch] = useState(14);
+  const [epoch] = useState(14);
   const [lr, setLr] = useState("0.001");
 
   return (

@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "arena_challenges",
+  "info": {
+    "singularName": "arena-challenge",
+    "pluralName": "arena-challenges",
+    "displayName": "Arena Challenge",
+    "description": "Coding and research challenges for the Arena"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "richtext" },
+    "difficulty": { "type": "enumeration", "enum": ["Easy", "Medium", "Hard", "Expert"], "default": "Medium" },
+    "bounty_points": { "type": "integer", "default": 100 },
+    "template_code": { "type": "text" },
+    "expected_output": { "type": "text" }
+  }
+}

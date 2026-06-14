@@ -85,7 +85,7 @@ export default function BuilderPage() {
         }
       };
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/pipelines`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/pipelines`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

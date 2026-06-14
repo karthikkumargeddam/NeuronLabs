@@ -9,7 +9,7 @@ export default function CourseViewer({ course, isAuthorized }) {
 
   useEffect(() => {
     if (isAuthorized) {
-      fetch("http://localhost:1337/api/courses?sort=createdAt:desc&pagination[limit]=5")
+      fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/courses?sort=createdAt:desc&pagination[limit]=5`)
         .then(res => res.json())
         .then(data => {
           if (data && data.data) {

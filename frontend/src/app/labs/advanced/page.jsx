@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { fetchAPI } from '../../../lib/api';
 
 export default async function AdvancedLabsPage() {
-  const response = await fetchAPI('/api/labs', { populate: '*', pagination: { limit: 200 } }, { cache: 'no-store' });
+  const response = await fetchAPI('/api/sandboxes', { populate: '*', pagination: { limit: 200 } }, { next: { revalidate: 60 } });
   const backendLabs = response?.data || [];
   
   const advancedLabsFromBackend = backendLabs.filter(lab => {
     const attrs = lab.attributes || lab;
-    // Assume labs might have an isAdvanced flag, or level set to Post-Doctoral/MIT Standard
-    return attrs.isAdvanced === true || attrs.level === 'Post-Doctoral' || attrs.level === 'MIT Standard';
+    // Advanced labs have 'vbox-gpu-a100' environment and '[Advanced PhD Research Lab]' in description
+    return attrs.environment === 'vbox-gpu-a100' || (attrs.description && attrs.description.includes('PhD Research'));
   });
 
   const fallbackTopics = [
@@ -52,9 +52,9 @@ export default async function AdvancedLabsPage() {
   const labsToDisplay = advancedLabsFromBackend.length > 0 ? advancedLabsFromBackend.map(lab => {
     const attrs = lab.attributes || lab;
     return {
-      id: attrs.uuid || lab.id,
+      id: lab.documentId || attrs.uuid || lab.id,
       title: attrs.title,
-      level: attrs.level || 'Post-Doctoral',
+      level: attrs.level || 'PhD',
       description: attrs.description,
       status: 'Online',
     };

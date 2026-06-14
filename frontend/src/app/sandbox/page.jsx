@@ -13,7 +13,7 @@ export default function SandboxPage() {
     setLoading(true);
     try {
       // Fetch from sandboxes instead of labs
-      const res = await fetch('http://localhost:1337/api/sandboxes?pagination[limit]=200');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/sandboxes?pagination[limit]=200`);
       if (!res.ok) throw new Error("Failed to fetch sandboxes");
       const data = await res.json();
       
@@ -34,7 +34,7 @@ export default function SandboxPage() {
   };
 
   useEffect(() => {
-    fetchLabs();
+    requestAnimationFrame(() => fetchLabs());
   }, []);
 
   const filteredLabs = labs.filter(lab => 

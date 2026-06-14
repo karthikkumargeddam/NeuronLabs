@@ -5,7 +5,7 @@
  */
 export function getStrapiURL(path = "") {
   const baseUrl =
-    process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+    process.env.NEXT_PUBLIC_STRAPI_URL || 'https://wise-action-3f2ccfecaa.strapiapp.com';
 
   return `${baseUrl}${path}`;
 }
@@ -66,6 +66,12 @@ export async function fetchAPI(
   const requestUrl = `${getStrapiURL(
     path
   )}${queryString ? `?${queryString}` : ""}`;
+
+  // Prevent Next.js static generation from hanging on Vercel if backend is not linked yet
+  if (process.env.VERCEL && (requestUrl.includes("127.0.0.1") || requestUrl.includes("localhost"))) {
+    console.warn(`Skipping fetch to localhost on Vercel during build: ${requestUrl}`);
+    return { data: null, error: true, message: "Skipped fetch during Vercel build" };
+  }
 
   const defaultOptions = {
     method: "GET",

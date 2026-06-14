@@ -14,7 +14,7 @@ export default function CertificatePage() {
     setLoading(true);
     
     try {
-      const response = await fetch("http://localhost:1337/api/certificates/generate", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/certificates/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

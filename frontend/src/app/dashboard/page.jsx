@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ResourceMonitor from "@/components/ResourceMonitor";
+import ActivityCalendarClient from "@/components/ActivityCalendarClient";
+import CourseRecommendations from "@/components/CourseRecommendations";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -27,11 +29,11 @@ export default async function DashboardPage() {
   // Fetch fresh user data from Strapi to bypass stale session cookies
   let freshUser = {};
   try {
-    const res = await fetch(`http://127.0.0.1:1337/api/users/me?populate=*`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/users/me?populate=*`, {
       headers: {
         Authorization: `Bearer ${session.jwt}`,
       },
-      cache: 'no-store'
+      next: { revalidate: 60 }
     });
     if (res.ok) {
       freshUser = await res.json();
@@ -195,27 +197,22 @@ export default async function DashboardPage() {
             {/* Resource Monitor */}
             <ResourceMonitor />
 
-            {/* Recent Activity */}
+            {/* Recent Activity / Gamification Graph */}
             <div className="bg-neutral-900/50 backdrop-blur-md rounded-3xl border border-white/5 p-6 md:p-8 hover:bg-neutral-900/80 transition-colors duration-300">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Clock className="text-teal-400 w-5 h-5" /> Recent Activity
+                  <Clock className="text-teal-400 w-5 h-5" /> Contribution Activity
                 </h2>
-              </div>
-              
-              <div className="text-center py-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-neutral-800 mb-4 border border-white/5">
-                  <Clock className="w-6 h-6 text-neutral-500" />
-                </div>
-                <h3 className="text-lg font-medium text-neutral-300 mb-2">No activity yet</h3>
-                <p className="text-neutral-500 max-w-sm mx-auto">
-                  When you enroll in courses or start using sandboxes, your recent activity will appear here.
-                </p>
-                <Link href="/courses" className="mt-6 inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition-colors">
-                  Explore Courses
+                <Link href="/achievements" className="text-sm text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1">
+                  View Badges <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
+              
+              <ActivityCalendarClient />
             </div>
+
+            {/* AI Course Recommendations Carousel */}
+            <CourseRecommendations />
 
           </div>
 

@@ -473,5 +473,351 @@ Transformers form the backbone of all modern Large Language Models (LLMs) like G
         `
       }
     ]
+  },
+  {
+    title: 'What is an AI Agent?',
+    uuid: 'what-is-an-ai-agent',
+    level: 'PhD',
+    description: 'Learn the fundamental cognitive architecture of an autonomous AI entity.',
+    modules: [
+      {
+        title: 'Introduction to Agents',
+        explanation: `
+# What is an AI Agent?
+
+Unlike traditional Large Language Models (LLMs) that function as static question-answering machines, an **AI Agent** is an autonomous entity capable of perceiving its environment, reasoning about complex problems, making independent decisions, and taking concrete actions using external tools to achieve a specific goal over a multi-step horizon.
+
+## The Cognitive Architecture
+
+If an LLM is the "brain", an Agent provides the "hands" (tools), the "hippocampus" (memory), and the "prefrontal cortex" (planning). 
+
+> **Definition:** An Autonomous Agent is an AI system that can act independently to achieve a given objective by breaking it down into manageable sub-tasks, executing them iteratively, and adapting its plan based on real-time feedback.
+
+### Key Capabilities
+- **Perception:** Reading API outputs, web pages, or vision models to understand the current state.
+- **Decision Making:** Evaluating multiple potential actions and choosing the one that maximizes the probability of success.
+- **Action:** Interacting with the digital environment through APIs, DOM manipulation, or CLI commands.
+        `
+      },
+      {
+        title: 'Premium Implementation Guide',
+        explanation: '## Advanced Implementation\n\nThis content explores the exact python code required to initialize your first AI Agent.'
+      }
+    ]
+  },
+  {
+    title: 'Evolution: From LLMs to Agents',
+    uuid: 'evolution-llms-agents',
+    level: 'PhD',
+    description: 'Trace the paradigm shift from static rule-based bots to autonomous multi-step reasoning models.',
+    modules: [
+      {
+        title: 'The AI Paradigm Shift',
+        explanation: `
+# Evolution: From LLMs to Agents
+
+To understand the magnitude of Agentic AI, we must trace its evolution from simple hardcoded scripts to fully autonomous entities.
+
+## The AI Paradigm Shift
+
+| Paradigm | Characteristics | Limitations |
+|----------|-----------------|-------------|
+| **Rule-Based Bots** | Hardcoded if/then rules. | Extremely brittle; zero understanding of natural language. |
+| **Conversational LLMs** | ChatGPT, Claude. Single-turn query/response. | No access to external real-time data; cannot take actions. |
+| **RAG Systems** | LLM + Vector DB. | Can read external knowledge but cannot execute tools or plan multi-step workflows. |
+| **Autonomous Agents** | ReAct, LangChain. | Capable of full autonomy, self-correction, and tool usage. |
+
+### Why LLMs are not enough
+An LLM alone suffers from hallucinations and knowledge cut-offs. By placing the LLM inside an Agentic loop, it can verify its own claims by calling a \`search_web\` tool, effectively grounding its responses in real-time reality.
+        `
+      },
+      {
+        title: 'Interactive RAG vs Agent Sandbox',
+        explanation: '## Interactive Comparison\n\nUse this premium sandbox to build both a RAG and an Agent.'
+      }
+    ]
+  },
+  {
+    title: 'Core Architecture of an Agent',
+    uuid: 'core-architecture-agent',
+    level: 'PhD',
+    description: 'Deep dive into Profile, Persona, Memory, Planning, and Tool Execution loops.',
+    modules: [
+      {
+        title: 'Foundational Pillars',
+        explanation: `
+# Core Architecture of an Agent
+
+Modern AI agents are built on four foundational pillars.
+
+## 1. Profile and Persona
+An agent begins with a system prompt that dictates its **Persona**. This defines its role, constraints, and the tone of its responses.
+
+\`\`\`python
+# Example of defining an Agent Persona
+system_prompt = """
+You are a Senior DevOps Engineer Agent. 
+Your goal is to diagnose and resolve server outages.
+You have access to AWS CLI, Kubernetes tools, and Datadog logs.
+Always verify a service is healthy after restarting it before marking the task complete.
+"""
+\`\`\`
+
+## 2. Memory Systems (Short-term & Long-term)
+An agent must remember what it has done to avoid repeating mistakes or getting stuck in infinite loops.
+
+- **Short-Term Memory**: The in-context learning window (e.g., the 128k token window of GPT-4o). It contains the current conversational thread and the immediate history of executed tool actions.
+- **Long-Term Memory**: Persistent storage (usually a Vector Database like Pinecone or Milvus) where the agent can store key learnings across sessions.
+
+## 3. Planning and Reasoning
+When given a complex task like "Deploy this Next.js app to AWS," the agent cannot do it in one step. It must use **Task Decomposition**. Advanced agents utilize self-reflection algorithms (like Reflexion). After taking an action, the agent reviews the output and asks itself: *"Did this achieve the intended sub-goal? If not, what went wrong?"*
+
+## 4. Action and Tool Execution
+This is where the magic happens. Agents interact with the digital world through **Function Calling**. They can browse the web, execute Python code, query databases, or send emails.
+        `
+      },
+      {
+        title: 'Building Long-Term Memory (Pinecone)',
+        explanation: '## Connecting Vector Databases\n\nLearn how to construct a robust long-term memory system.'
+      }
+    ]
+  },
+  {
+    title: 'The ReAct Framework',
+    uuid: 'react-framework',
+    level: 'PhD',
+    description: 'Learn how to force LLMs to output internal thoughts before taking execution paths.',
+    modules: [
+      {
+        title: 'Reasoning + Acting',
+        explanation: `
+# The ReAct Framework
+
+The **ReAct (Reasoning + Acting)** framework is the most popular mental model for agents. It forces the LLM to output its internal thought process before taking an action.
+
+## The ReAct Loop
+1. **Thought**: The agent analyzes the current situation.
+2. **Action**: The agent selects a tool and provides the arguments.
+3. **Observation**: The system executes the tool and returns the raw output to the agent.
+4. *(Repeat until the objective is completed)*
+
+### Example ReAct Trace
+\`\`\`text
+User: How many days until the next US Presidential Election from today?
+
+Thought 1: I need to know today's date, and the date of the next US Presidential Election. I will use the get_current_date tool.
+Action 1: get_current_date()
+Observation 1: 2026-06-14
+
+Thought 2: Now I need to find the exact date of the next US Presidential Election. I will use the search_web tool.
+Action 2: search_web("date of next US Presidential Election")
+Observation 2: The next US Presidential Election will be held on November 7, 2028.
+
+Thought 3: Now I need to calculate the difference in days between June 14, 2026, and November 7, 2028. I will use the run_python_math tool.
+Action 3: run_python_math("from datetime import date; print((date(2028, 11, 7) - date(2026, 6, 14)).days)")
+Observation 3: 877
+
+Thought 4: I have the answer. I will now synthesize the final response to the user.
+Final Answer: There are exactly 877 days until the next US Presidential election on November 7, 2028!
+\`\`\`
+        `
+      },
+      {
+        title: 'Write a Custom ReAct Loop from Scratch',
+        explanation: '## Building ReAct in Python\n\nThis premium module walks through the from-scratch implementation of the reasoning cycle.'
+      }
+    ]
+  },
+  {
+    title: 'Real-World Applications',
+    uuid: 'real-world-applications',
+    level: 'PhD',
+    description: 'Discover how agents are autonomously solving tasks in SWE, Finance, and Cybersecurity.',
+    modules: [
+      {
+        title: 'Agentic Transformations',
+        explanation: `
+# Real-World Applications
+
+Agents are moving rapidly from research labs into enterprise production environments. Here are a few ways Agentic AI is transforming industries today:
+
+## 1. Software Engineering
+**Autonomous Coding Assistants (like Devin)** are AI Software Engineers that can read a GitHub issue, clone the repository, write the code to fix the bug, run unit tests to verify the fix, and open a Pull Request entirely autonomously. They use CLI tools and code editors just like human engineers.
+
+## 2. Financial Analysis
+Hedge funds are deploying agents that monitor real-time SEC filings and news streams. These agents extract financial sentiment, run proprietary trading algorithms, and execute trades via brokerage APIs—all within milliseconds of breaking news.
+
+## 3. Cybersecurity
+Automated penetration testing agents are revolutionizing security. Instead of human red teams, an agent is deployed into a network where it autonomously probes for vulnerabilities, exploits them in secure sandboxes, and writes detailed remediation reports for the blue team.
+
+## 4. Customer Support
+Next-generation support agents don't just answer FAQs. If a user asks "Cancel my order", the agent actually uses internal API tools to look up the order in Shopify, process the refund in Stripe, and send the cancellation email autonomously.
+        `
+      },
+      {
+        title: 'Enterprise Case Studies',
+        explanation: '## Detailed Case Studies\n\nDeep dive into exact architecture diagrams of deployed enterprise agents.'
+      }
+    ]
+  },
+  {
+    title: 'Agentic AI Conclusion',
+    uuid: 'agentic-ai-conclusion',
+    level: 'PhD',
+    description: 'The future of AI as a worker rather than a tool.',
+    modules: [
+      {
+        title: 'The Agentic Era',
+        explanation: `
+# Conclusion
+
+Autonomous agents represent the transition from AI as a *Tool* to AI as a *Worker*. 
+
+By combining the reasoning capabilities of Large Language Models with infinite tool action spaces, memory, and reflection loops, we are entering an era of unbounded digital automation.
+
+In the next sections of your learning journey, you will get your hands dirty and write your very first Agent using Python and the LangChain framework. Welcome to the Agentic Era!
+        `
+      },
+      {
+        title: 'Final Exam & Certification',
+        explanation: '## Final Exam\n\nPass this premium exam to receive your Agentic AI Engineer certification.'
+      }
+    ]
+  },
+  {
+    title: 'Gen AI',
+    uuid: 'gen-ai',
+    level: 'M.Tech',
+    description: 'Master Large Language Models (LLMs), RAG pipelines, fine-tuning, and advanced prompt engineering.',
+    modules: [
+      {
+        title: 'LLM Architectures & Transformers',
+        explanation: `
+## The Transformer Revolution
+Introduced by Google in the 2017 paper "Attention Is All You Need", the Transformer architecture fundamentally changed Natural Language Processing. It discarded Recurrent Neural Networks (RNNs) in favor of the **Self-Attention Mechanism**.
+
+### Self-Attention
+Self-attention allows the model to look at other words in the input sequence to gain a better understanding of a specific word's context.
+
+For example, in the sentence:
+> "The animal didn't cross the street because **it** was too tired."
+
+The self-attention mechanism assigns a high weight between the word "it" and "animal".
+
+### Encoder vs Decoder
+- **Encoder-Only (BERT)**: Great for classification and understanding tasks.
+- **Decoder-Only (GPT series)**: Auto-regressive models optimized for generating text one token at a time.
+- **Encoder-Decoder (T5)**: Good for translation and summarization.
+        `
+      },
+      {
+        title: 'Retrieval-Augmented Generation (RAG)',
+        explanation: `
+## Overcoming LLM Hallucinations
+LLMs suffer from two major problems:
+1. **Knowledge Cutoff**: They don't know about events that happened after they were trained.
+2. **Hallucinations**: They confidently make up facts when they don't know the answer.
+
+**Retrieval-Augmented Generation (RAG)** solves this by retrieving relevant context from a database and injecting it into the prompt.
+
+### The RAG Pipeline
+1. **Ingestion**: Split large documents into smaller chunks (e.g., 500 tokens).
+2. **Embedding**: Pass chunks through an embedding model (like \`text-embedding-3-small\`) to convert them into dense vectors.
+3. **Storage**: Store the vectors in a Vector Database (e.g., Pinecone, Milvus, pgvector).
+4. **Retrieval**: When a user asks a query, embed the query, perform a Cosine Similarity search in the vector DB, and retrieve the top-K chunks.
+5. **Generation**: Send the original query *plus* the retrieved chunks to the LLM to generate a grounded answer.
+
+\`\`\`python
+# Simple RAG Prompt Template
+prompt = f"""
+Use the following context to answer the user's question. If the answer is not in the context, say "I don't know".
+
+Context:
+{retrieved_chunks}
+
+Question:
+{user_query}
+"""
+\`\`\`
+        `
+      },
+      {
+        title: 'Parameter-Efficient Fine-Tuning (PEFT)',
+        explanation: `
+## Why Fine-Tune?
+While Prompt Engineering and RAG are powerful, sometimes you need the model to adopt a specific tone, format, or highly specialized domain knowledge (like medical jargon or specific coding languages).
+
+Full fine-tuning of a 70B parameter model requires massive compute clusters.
+
+### LoRA (Low-Rank Adaptation)
+LoRA freezes the pre-trained model weights and injects trainable rank decomposition matrices into each layer of the Transformer architecture. This drastically reduces the number of trainable parameters by up to 10,000 times!
+
+### QLoRA (Quantized LoRA)
+QLoRA takes this a step further by quantizing the base model weights to 4-bit precision. This allows you to fine-tune a massive 70B parameter model on a single consumer GPU (like an RTX 3090 or A100)!
+        `
+      }
+    ]
+  },
+  {
+    title: 'Forward deployment engineer(FDE)',
+    uuid: 'forward-deployment-engineer-fde',
+    level: 'B.Tech',
+    description: 'Bridge the gap between product and customer. Learn solution architecture, cloud deployment, and technical consulting.',
+    modules: [
+      {
+        title: 'The FDE Role & Solution Architecture',
+        explanation: `
+## What is a Forward Deployed Engineer?
+Forward Deployed Engineers (FDEs)—sometimes called Field Engineers or Solutions Architects—sit at the intersection of software engineering and customer success. You are the technical vanguard of the company.
+
+While traditional software engineers build the core platform, an FDE embeds directly with the client to implement, customize, and deploy that platform to solve the client's specific business problems.
+
+### Core Responsibilities
+- **Discovery**: Leading technical scoping sessions with clients to understand their data silos and pain points.
+- **Prototyping**: Building rapid Proof of Concepts (PoCs) to demonstrate value within weeks, not months.
+- **Integration**: Writing custom scripts, data pipelines, and API integrations connecting the client's legacy systems to your modern platform.
+
+### The Mindset
+An FDE must be aggressively pragmatic. You aren't writing code that needs to survive for 10 years; you are writing code that delivers multi-million dollar business value *today*.
+        `
+      },
+      {
+        title: 'Enterprise Cloud Deployment',
+        explanation: `
+## Navigating Enterprise Environments
+Unlike deploying to a startup's clean AWS account, deploying enterprise software involves navigating complex security requirements, VPNs, proxies, and air-gapped environments.
+
+### Key Deployment Technologies
+As an FDE, you must be a master of DevOps tools to deploy software anywhere.
+
+1. **Docker**: Containerizing applications to ensure they run identically on a developer's laptop and an enterprise's bare-metal server.
+2. **Kubernetes (K8s)**: Orchestrating those containers. You must know how to write Helm charts to deploy complex microservices architectures.
+3. **Terraform**: Infrastructure as Code (IaC) to quickly spin up required cloud resources (VPCs, RDS instances, S3 buckets) on AWS, Azure, or GCP.
+
+### Security and Compliance
+You will frequently interact with Chief Information Security Officers (CISOs). You must understand:
+- **SOC 2 and HIPAA compliance**
+- **Role-Based Access Control (RBAC)**
+- **Encryption at rest and in transit (TLS/SSL)**
+        `
+      },
+      {
+        title: 'Stakeholder Management & Escalations',
+        explanation: `
+## The Human Element
+The hardest part of being an FDE is not the technology—it's the people. You are often deployed to environments where internal IT teams may feel threatened by your software, or executives have unrealistic expectations.
+
+### Effective Communication
+- **Executive Summaries**: When speaking to a VP or C-Level executive, lead with the business impact. They do not care about the Kubernetes ingress controller; they care that the new pipeline saves 40 hours of manual work per week.
+- **Technical Deep-Dives**: When speaking to the client's engineering team, demonstrate deep technical competence to earn their respect and cooperation.
+
+### Handling Escalations
+When things go wrong in production (and they will), an FDE must:
+1. **Acknowledge the issue immediately** to build trust.
+2. **Triage and mitigate** the problem to stop the bleeding.
+3. **Communicate the RCA (Root Cause Analysis)** transparently once the issue is resolved.
+        `
+      }
+    ]
   }
 ];

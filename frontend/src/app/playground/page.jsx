@@ -3,7 +3,7 @@ import PlaygroundClient from './PlaygroundClient';
 
 async function getModels() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/models`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/models`, { next: { revalidate: 60 } });
     const json = await res.json();
     return json.data || [];
   } catch (error) {

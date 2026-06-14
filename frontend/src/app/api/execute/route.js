@@ -1,12 +1,4 @@
 import { NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
-import crypto from 'crypto';
-
-const execAsync = promisify(exec);
 
 export async function POST(request) {
   try {
@@ -16,78 +8,67 @@ export async function POST(request) {
       return NextResponse.json({ error: "No code provided" }, { status: 400 });
     }
 
-    const tempDir = os.tmpdir();
-    const uniqueId = crypto.randomUUID();
-    let stdout = '';
-    let stderr = '';
-    
-    try {
-      if (language === 'python') {
-        const filePath = path.join(tempDir, `script_${uniqueId}.py`);
-        await fs.writeFile(filePath, code);
-        const { stdout: out, stderr: err } = await execAsync(`python "${filePath}"`, { timeout: 10000 });
-        stdout = out;
-        stderr = err;
-        await fs.unlink(filePath).catch(() => {});
-      } 
-      else if (language === 'javascript') {
-        const filePath = path.join(tempDir, `script_${uniqueId}.js`);
-        await fs.writeFile(filePath, code);
-        const { stdout: out, stderr: err } = await execAsync(`node "${filePath}"`, { timeout: 10000 });
-        stdout = out;
-        stderr = err;
-        await fs.unlink(filePath).catch(() => {});
-      }
-      else if (language === 'java') {
-        // Extract public class name or default to Main
-        const classNameMatch = code.match(/public\s+class\s+([a-zA-Z0-9_]+)/);
-        const className = classNameMatch ? classNameMatch[1] : 'Main';
-        const dirPath = path.join(tempDir, `java_${uniqueId}`);
-        await fs.mkdir(dirPath);
-        const filePath = path.join(dirPath, `${className}.java`);
-        await fs.writeFile(filePath, code);
-        
-        // Compile
-        await execAsync(`javac "${filePath}"`, { timeout: 10000 });
-        // Run
-        const { stdout: out, stderr: err } = await execAsync(`java -cp "${dirPath}" ${className}`, { timeout: 10000 });
-        stdout = out;
-        stderr = err;
-        
-        // Cleanup
-        await fs.rm(dirPath, { recursive: true, force: true }).catch(() => {});
-      }
-      else if (language === 'c') {
-        const dirPath = path.join(tempDir, `c_${uniqueId}`);
-        await fs.mkdir(dirPath);
-        const filePath = path.join(dirPath, `main.c`);
-        const exePath = path.join(dirPath, `main.exe`);
-        await fs.writeFile(filePath, code);
-        
-        // Compile
-        await execAsync(`gcc "${filePath}" -o "${exePath}"`, { timeout: 10000 });
-        // Run
-        const { stdout: out, stderr: err } = await execAsync(`"${exePath}"`, { timeout: 10000 });
-        stdout = out;
-        stderr = err;
-        
-        // Cleanup
-        await fs.rm(dirPath, { recursive: true, force: true }).catch(() => {});
-      }
-      else {
-        return NextResponse.json({ 
-          error: `Language '${language}' is not configured for local execution yet. Please install the compiler natively on your machine to use it.` 
-        }, { status: 400 });
-      }
+    // Map language identifiers to Judge0 language IDs
+    const languageMap = {
+      'javascript': 102, // Node.js 22
+      'python': 109,     // Python 3.13
+      'java': 91,        // Java 17
+      'c': 103,          // C GCC 14
+      'cpp': 105,        // C++ GCC 14
+      'go': 107,         // Go 1.23
+      'rust': 108,       // Rust 1.85
+      'ruby': 72,        // Ruby 2.7
+      'php': 98,         // PHP 8.3
+      'csharp': 51,      // C# Mono
+      'swift': 83        // Swift 5.2
+    };
 
-      return NextResponse.json({ output: stdout, error: stderr });
-    } catch (execError) {
-      // If the command fails (e.g. compilation error or runtime error)
-      return NextResponse.json({ 
-        output: execError.stdout || '', 
-        error: execError.stderr || execError.message || 'Execution failed' 
-      });
+    const languageId = languageMap[language.toLowerCase()];
+
+    if (!languageId) {
+      return NextResponse.json({ error: `Language '${language}' is not supported yet.` }, { status: 400 });
     }
+
+    // Call Judge0 public free tier API for secure remote code execution
+    const judge0Res = await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        source_code: code,
+        language_id: languageId
+      })
+    });
+
+    if (!judge0Res.ok) {
+      const errorText = await judge0Res.text();
+      return NextResponse.json({ error: `Execution engine error: ${errorText}` }, { status: 500 });
+    }
+
+    const data = await judge0Res.json();
+    
+    // Check for compilation errors
+    if (data.compile_output) {
+      return NextResponse.json({ output: '', error: data.compile_output });
+    }
+
+    // Check for runtime errors
+    if (data.stderr) {
+      return NextResponse.json({ output: data.stdout || '', error: data.stderr });
+    }
+
+    // Return successful execution
+    if (data.stdout !== null && data.stdout !== undefined) {
+      return NextResponse.json({ output: data.stdout, error: '' });
+    }
+
+    // Fallback if status code implies an error but no stderr/compile_output provided (e.g. timeout)
+    if (data.status && data.status.id > 3) {
+      return NextResponse.json({ output: data.stdout || '', error: `Execution failed: ${data.status.description}` });
+    }
+
+    return NextResponse.json({ output: '', error: "Program executed silently with no output" });
 
   } catch (err) {
     console.error("Execution error:", err);

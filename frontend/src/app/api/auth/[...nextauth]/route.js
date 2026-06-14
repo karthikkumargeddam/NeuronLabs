@@ -11,7 +11,7 @@ export const authOptions = {
       },
       async authorize(credentials, req) {
         try {
-          const res = await fetch("http://127.0.0.1:1337/api/auth/local", {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/auth/local`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
