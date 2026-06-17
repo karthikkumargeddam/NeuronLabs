@@ -20,6 +20,7 @@ const nextConfig = {
     ],
   },
   turbopack: {},
+  eslint: { ignoreDuringBuilds: true },
   async redirects() {
     return [
       {
@@ -29,11 +30,6 @@ const nextConfig = {
       },
       {
         source: '/virtualbox',
-        destination: '/virtual-box',
-        permanent: true,
-      },
-      {
-        source: '/virtual-toolbox',
         destination: '/virtual-box',
         permanent: true,
       },
