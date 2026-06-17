@@ -251,7 +251,26 @@ export default async function Home() {
             Explore Labs
           </Link>
         </div>
-
+        <div className="flex flex-wrap justify-center gap-3 mb-16 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {[
+            { id: "vscode", name: "VS Code", icon: "💻" },
+            { id: "terminal", name: "Terminal", icon: ">_" },
+            { id: "jupyter", name: "Jupyter", icon: "📓" },
+            { id: "pytorch", name: "PyTorch", icon: "🔥" },
+            { id: "tensorboard", name: "TensorBoard", icon: "📈" },
+            { id: "snowflake", name: "Snowflake", icon: "❄️" },
+            { id: "tableau", name: "Tableau", icon: "📊" }
+          ].map(tool => (
+            <Link 
+              key={tool.id}
+              href={`/virtual-toolbox/${tool.id}`}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card-bg/50 border border-card-border hover:bg-card-bg hover:border-cyan-500/50 hover:text-cyan-400 transition-all text-sm font-medium text-gray-400 shadow-sm"
+            >
+              <span className="text-lg">{tool.icon}</span>
+              {tool.name}
+            </Link>
+          ))}
+        </div>
         {/* Mockup Terminal Component */}
         <div className="w-full animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <MockupTerminal />
