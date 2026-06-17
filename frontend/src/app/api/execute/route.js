@@ -20,13 +20,29 @@ export async function POST(request) {
       'ruby': 72,        // Ruby 2.7
       'php': 98,         // PHP 8.3
       'csharp': 51,      // C# Mono
-      'swift': 83        // Swift 5.2
+      'swift': 83,       // Swift 5.2
+      'r': 80            // R 4.0.0
     };
 
     const languageId = languageMap[language.toLowerCase()];
 
     if (!languageId) {
       return NextResponse.json({ error: `Language '${language}' is not supported yet.` }, { status: 400 });
+    }
+
+    let finalCode = code;
+    
+    // Automatically capture plots for R
+    if (language.toLowerCase() === 'r') {
+      finalCode = `
+options(device = function() png("neuron_plot.png", width=600, height=400, bg="white"))
+${code}
+if(names(dev.cur()) != "null device") invisible(dev.off())
+if(file.exists("neuron_plot.png") && file.info("neuron_plot.png")$size > 0) {
+  b64 <- system("base64 -w 0 neuron_plot.png", intern=TRUE)
+  cat(paste0("\\nNEURON_IMAGE:data:image/png;base64,", b64, "\\n"))
+}
+`;
     }
 
     // Call Judge0 public free tier API for secure remote code execution
@@ -36,7 +52,7 @@ export async function POST(request) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        source_code: code,
+        source_code: finalCode,
         language_id: languageId
       })
     });

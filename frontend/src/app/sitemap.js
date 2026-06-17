@@ -12,7 +12,12 @@ export default async function sitemap() {
   // Fetch dynamic courses
   try {
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://wise-action-3f2ccfecaa.strapiapp.com';
-    const res = await fetch(`${strapiUrl}/api/courses`, { cache: 'no-store' });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    
+    const res = await fetch(`${strapiUrl}/api/courses`, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
     if (res.ok) {
       const json = await res.json();
       const courses = json.data;
@@ -27,7 +32,7 @@ export default async function sitemap() {
       return [...routes, ...courseRoutes];
     }
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.error("Error generating sitemap (timeout or offline):", error.message);
   }
 
   return routes;

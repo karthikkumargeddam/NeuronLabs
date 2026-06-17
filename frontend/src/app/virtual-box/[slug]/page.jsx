@@ -97,7 +97,7 @@ export default function SandboxDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-12 px-4 flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{error || "Sandbox not found"}</h2>
-        <Link href="/sandbox" className="text-indigo-600 hover:text-indigo-500 underline">
+        <Link href="/virtual-box" className="text-indigo-600 hover:text-indigo-500 underline">
           Return to Sandboxes
         </Link>
       </div>
@@ -108,7 +108,7 @@ export default function SandboxDetailPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
-          <Link href="/sandbox" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center text-sm font-medium transition-colors">
+          <Link href="/virtual-box" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center text-sm font-medium transition-colors">
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Back to Sandboxes
           </Link>

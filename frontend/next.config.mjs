@@ -20,6 +20,30 @@ const nextConfig = {
     ],
   },
   turbopack: {},
+  async redirects() {
+    return [
+      {
+        source: '/sandbox',
+        destination: '/virtual-box',
+        permanent: true,
+      },
+      {
+        source: '/virtualbox',
+        destination: '/virtual-box',
+        permanent: true,
+      },
+      {
+        source: '/virtual-toolbox',
+        destination: '/virtual-box',
+        permanent: true,
+      },
+      {
+        source: '/sandbox/:path*',
+        destination: '/virtual-box/:path*',
+        permanent: true,
+      }
+    ];
+  },
 };
 
 export default withPWA(nextConfig);

@@ -32,12 +32,14 @@ export default function GlobalNav() {
           {session ? (
             <div className="flex items-center gap-4">
               <div className="text-sm font-mono text-[var(--secondary)] hidden sm:flex items-center">
-                {session.user?.name} ({session.user?.role || "Student"})
-                {session.user?.isPro && (
-                  <span className="ml-2 inline-flex items-center justify-center bg-amber-500/20 text-amber-400 p-1 rounded-full border border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.3)]" title="Pro Member">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                  </span>
-                )}
+                <Link href="/profile" className="hover:underline flex items-center">
+                  {session.user?.name} ({session.user?.role || "Student"})
+                  {session.user?.isPro && (
+                    <span className="ml-2 inline-flex items-center justify-center bg-amber-500/20 text-amber-400 p-1 rounded-full border border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.3)]" title="Pro Member">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    </span>
+                  )}
+                </Link>
               </div>
               
               {/* Cmd+K Search Button */}
@@ -100,8 +102,8 @@ export default function GlobalNav() {
             <Link href="/playground" className="text-gray-600 dark:text-gray-300 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">Playground</Link>
             <Link href="/code-editor" className="text-gray-600 dark:text-gray-300 hover:text-purple-500 dark:hover:text-purple-400 transition-colors">Code Editor</Link>
             <Link href="/labs" className="text-gray-600 dark:text-gray-300 hover:text-fuchsia-500 dark:hover:text-fuchsia-400 transition-colors">Labs</Link>
-            <Link href="/sandbox" className="text-gray-600 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Sandbox</Link>
             <Link href="/virtual-box" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">Virtual Box</Link>
+            <Link href="/virtual-toolbox" className="text-gray-600 dark:text-gray-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Virtual Toolbox</Link>
             <Link href="/builder" className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1">
               Builder <span className="relative flex h-2 w-2 ml-1"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span></span>
             </Link>

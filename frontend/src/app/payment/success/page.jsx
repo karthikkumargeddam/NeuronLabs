@@ -1,6 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Force Next.js to invalidate client router cache and refetch server components
+    // so that the Homepage and Dashboard instantly reflect the new Pro status.
+    router.refresh();
+  }, [router]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#030303] text-white p-4">
       <div className="max-w-md w-full glass-panel p-8 rounded-3xl border border-gray-800/80 bg-gradient-to-b from-[#111] to-[#050505] text-center shadow-[0_0_30px_rgba(34,197,94,0.15)] animate-fade-in">

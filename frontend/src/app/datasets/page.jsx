@@ -15,9 +15,18 @@ export const metadata = {
 
 async function getDatasets() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/datasets`, { next: { revalidate: 60 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/datasets?populate=*`, { next: { revalidate: 60 } });
     const json = await res.json();
-    return json.data || [];
+    if (json.data && json.data.length > 0) {
+      return json.data.map(d => ({ id: d.id, ...(d.attributes || d) }));
+    }
+    
+    // Fallback if Strapi has no datasets yet
+    return [
+      { id: 1, title: 'AlphaFold Protein Structure Database', description: 'DeepMind\'s predicted 3D structures for almost every catalogued protein known to science.', size: '23 TB', downloads: '14.2K', tags: ['Biology', '3D Models', 'DeepMind'], color: 'from-blue-600 to-cyan-600', format: 'PDB/CIF' },
+      { id: 2, title: 'Global Climate Models (CMIP6)', description: 'Outputs from global climate models simulating past, present, and future climates.', size: '4.5 PB', downloads: '8.9K', tags: ['Climate', 'Time Series'], color: 'from-emerald-600 to-teal-600', format: 'NetCDF' },
+      { id: 3, title: 'Common Crawl Web Archive', description: 'Petabytes of web scrape data collected over 12 years. Essential for training LLMs.', size: '380 TB', downloads: '45.1K', tags: ['NLP', 'Text', 'Raw'], color: 'from-purple-600 to-pink-600', format: 'WARC' },
+    ];
   } catch (error) {
     console.error('Failed to fetch datasets:', error);
     return [];

@@ -440,6 +440,44 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiArenaChallengeArenaChallenge
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'arena_challenges';
+  info: {
+    description: 'Coding and research challenges for the Arena';
+    displayName: 'Arena Challenge';
+    pluralName: 'arena-challenges';
+    singularName: 'arena-challenge';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bounty_points: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<100>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText;
+    difficulty: Schema.Attribute.Enumeration<
+      ['Easy', 'Medium', 'Hard', 'Expert']
+    > &
+      Schema.Attribute.DefaultTo<'Medium'>;
+    expected_output: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::arena-challenge.arena-challenge'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    template_code: Schema.Attribute.Text;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
@@ -855,6 +893,41 @@ export interface ApiLabLab extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     uuid: Schema.Attribute.UID;
     visualization: Schema.Attribute.Text;
+  };
+}
+
+export interface ApiLeaderboardEntryLeaderboardEntry
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'leaderboard_entries';
+  info: {
+    description: 'User rankings for the global arena leaderboard';
+    displayName: 'Leaderboard Entry';
+    pluralName: 'leaderboard-entries';
+    singularName: 'leaderboard-entry';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::leaderboard-entry.leaderboard-entry'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    rank_title: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Novice'>;
+    score: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -2060,6 +2133,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::arena-challenge.arena-challenge': ApiArenaChallengeArenaChallenge;
       'api::article.article': ApiArticleArticle;
       'api::badge.badge': ApiBadgeBadge;
       'api::bounty.bounty': ApiBountyBounty;
@@ -2073,6 +2147,7 @@ declare module '@strapi/strapi' {
       'api::hackathon.hackathon': ApiHackathonHackathon;
       'api::job.job': ApiJobJob;
       'api::lab.lab': ApiLabLab;
+      'api::leaderboard-entry.leaderboard-entry': ApiLeaderboardEntryLeaderboardEntry;
       'api::mentor.mentor': ApiMentorMentor;
       'api::model.model': ApiModelModel;
       'api::notification.notification': ApiNotificationNotification;

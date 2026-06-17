@@ -4,9 +4,19 @@ import Image from 'next/image';
 
 async function getJobs() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/jobs`, { next: { revalidate: 60 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/jobs?populate=*`, { next: { revalidate: 60 } });
     const json = await res.json();
-    return json.data || [];
+    if (json.data && json.data.length > 0) {
+      return json.data.map(d => ({ id: d.id, ...(d.attributes || d) }));
+    }
+    
+    // Fallback if Strapi has no jobs yet
+    return [
+      { id: 1, title: 'AI Research Engineer', company: 'OpenAI', salary: '$200k - $350k', location: 'San Francisco, CA', type: 'Full-time', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/1024px-OpenAI_Logo.svg.png', tags: ['Deep Learning', 'PyTorch'] },
+      { id: 2, title: 'Machine Learning Scientist', company: 'DeepMind', salary: '£120k - £200k', location: 'London, UK', type: 'Full-time', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/DeepMind_logo.svg/512px-DeepMind_logo.svg.png', tags: ['Reinforcement Learning', 'JAX'] },
+      { id: 3, title: 'Data Engineer (LLM Infrastructure)', company: 'Anthropic', salary: '$180k - $280k', location: 'Remote', type: 'Contract', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Anthropic_logo.svg/512px-Anthropic_logo.svg.png', tags: ['Kubernetes', 'Python', 'BigQuery'] },
+      { id: 4, title: 'Forward Deployed Engineer', company: 'Palantir', salary: '$150k - $220k', location: 'New York, NY', type: 'Full-time', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Palantir_Technologies_logo.svg/512px-Palantir_Technologies_logo.svg.png', tags: ['Data Science', 'Client Facing'] }
+    ];
   } catch (error) {
     console.error('Failed to fetch jobs:', error);
     return [];
@@ -73,7 +83,8 @@ export default async function CareersPage() {
                     <span className="text-xs font-bold px-2 py-1 bg-white/10 text-white rounded-md border border-white/10">
                       {job.type}
                     </span>
-                    {job.tags?.map(tag => (
+                    {/* Tags */}
+                    {(job.tags || []).map(tag => (
                       <span key={tag} className="text-xs font-mono px-2 py-1 bg-purple-500/10 text-purple-300 rounded-md border border-purple-500/20">
                         {tag}
                       </span>

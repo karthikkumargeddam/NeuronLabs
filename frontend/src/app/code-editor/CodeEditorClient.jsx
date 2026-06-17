@@ -26,9 +26,10 @@ const TOP_LANGUAGES = [
   { id: 'php', name: 'PHP', defaultCode: '<?php\n  echo "Hello, World!";\n?>' },
   { id: 'csharp', name: 'C#', defaultCode: 'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, World!");\n    }\n}' },
   { id: 'swift', name: 'Swift', defaultCode: 'print("Hello, World!")' },
+  { id: 'r', name: 'R', defaultCode: '# Hello World in R\nprint("Hello, World!")\n\n# Data Visualization Example\nx <- c(1, 2, 3, 4, 5)\ny <- c(2, 4, 6, 8, 10)\nplot(x, y, main="My Plot")' },
 ];
 
-export default function CodeEditorClient() {
+export default function CodeEditorClient({ initialChallengeId }) {
   const { data: session } = useSession();
   const [language, setLanguage] = useState(TOP_LANGUAGES[0].id);
   const [code, setCode] = useState(TOP_LANGUAGES[0].defaultCode);
@@ -56,6 +57,47 @@ export default function CodeEditorClient() {
       fetchSnippets();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (initialChallengeId) {
+      fetchChallenge(initialChallengeId);
+    }
+  }, [initialChallengeId]);
+
+  const fetchChallenge = async (id) => {
+    try {
+      // API call to arena-challenges
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/arena-challenges?filters[documentId][$eq]=${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.data && data.data.length > 0) {
+          const challenge = data.data[0];
+          setTitle(challenge.title || 'Arena Challenge');
+          
+          let newCode = `/*\n  CHALLENGE: ${challenge.title}\n  ${challenge.description || ''}\n*/\n\n`;
+          if (challenge.starterCode) {
+            newCode += challenge.starterCode;
+          } else {
+            newCode += TOP_LANGUAGES.find(l => l.id === language)?.defaultCode || '';
+          }
+          setCode(newCode);
+          toast.success("Challenge loaded successfully!");
+        } else {
+          // Check mock fallback if it's mock-1, mock-2, etc.
+          if (id.startsWith('mock-')) {
+             setTitle('Mock Challenge');
+             setCode(`/*\n  Mock Challenge ID: ${id}\n  Solve the challenge!\n*/\n\n`);
+             toast.success("Loaded mock challenge");
+          } else {
+             toast.error("Challenge not found.");
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to fetch challenge details.");
+    }
+  };
 
   const fetchSnippets = async () => {
     try {
@@ -451,7 +493,22 @@ export default function CodeEditorClient() {
             </button>
           </div>
           <div className="flex-1 p-4 overflow-y-auto font-mono text-sm whitespace-pre-wrap text-green-400 custom-scrollbar">
-            {output || <span className="text-gray-600 italic">No output yet. Click 'Run' to execute code.</span>}
+            {output ? (
+              output.includes('NEURON_IMAGE:') ? (
+                <div className="flex flex-col gap-4">
+                  <span>{output.split('NEURON_IMAGE:')[0]}</span>
+                  <img 
+                    src={output.split('NEURON_IMAGE:')[1].trim()} 
+                    alt="Execution Plot" 
+                    className="max-w-full md:max-w-[600px] rounded shadow-lg border border-gray-700 bg-white" 
+                  />
+                </div>
+              ) : (
+                <span>{output}</span>
+              )
+            ) : (
+              <span className="text-gray-600 italic">No output yet. Click 'Run' to execute code.</span>
+            )}
           </div>
         </div>
       </div>

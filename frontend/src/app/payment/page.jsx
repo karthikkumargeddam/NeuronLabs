@@ -14,7 +14,7 @@ export default function PaymentPage() {
   const [error, setError] = useState("");
 
   const upiId = "kartikfiitjee68-5@okicici";
-  const amount = 299;
+  const amount = 1;
   const upiUrl = `upi://pay?pa=${upiId}&pn=NeuronLabs&am=${amount}&cu=INR`;
 
   const handleSubmit = async (e) => {
@@ -63,7 +63,22 @@ export default function PaymentPage() {
       {/* Glow Effects */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-500/10 via-indigo-500/10 to-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="max-w-4xl w-full grid md:grid-cols-2 gap-8 z-10">
+      {session?.user?.isPro ? (
+        <div className="max-w-md w-full glass-panel p-8 rounded-3xl border border-green-500/30 bg-[#0a0a0a]/80 text-center shadow-[0_0_30px_rgba(34,197,94,0.15)] z-10">
+          <div className="w-16 h-16 mx-auto rounded-full bg-green-500/10 text-green-400 flex items-center justify-center mb-6 border border-green-500/30">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Already a Pro Member</h2>
+          <p className="text-gray-400 mb-8 font-medium">Your account already has an active Pro subscription.</p>
+          <button 
+            onClick={() => router.push("/dashboard")}
+            className="w-full py-4 rounded-xl font-bold bg-gray-800 text-white hover:bg-gray-700 transition-all"
+          >
+            Go to Dashboard
+          </button>
+        </div>
+      ) : (
+        <div className="max-w-4xl w-full grid md:grid-cols-2 gap-8 z-10">
         
         {/* Left Side: QR Code */}
         <div className="glass-panel p-10 rounded-3xl border border-gray-800/80 bg-[#0a0a0a]/80 flex flex-col items-center justify-center text-center">
@@ -134,7 +149,8 @@ export default function PaymentPage() {
           )}
         </div>
 
-      </div>
+        </div>
+      )}
     </div>
   );
 }

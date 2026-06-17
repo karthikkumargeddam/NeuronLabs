@@ -56,7 +56,7 @@ export default function DatasetGridClient({ datasets }) {
               
               <div className="space-y-4 mb-8">
                 <div className="flex flex-wrap gap-2">
-                  {dataset.tags.map(tag => (
+                  {(dataset.tags || []).map(tag => (
                     <span key={tag} className="text-xs font-mono px-2 py-1 bg-white/5 text-neutral-300 rounded-md border border-white/5">
                       {tag}
                     </span>

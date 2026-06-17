@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 export const dynamic = 'force-dynamic';
+import { Suspense } from "react";
 import Providers from "../components/Providers";
 import GlobalNav from "../components/GlobalNav";
 import Footer from "../components/Footer";
@@ -20,20 +21,21 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://neuronlabs.online"),
-  title: "NeuronLabs | Zero-Setup Virtual Sandboxes for Tech Education",
-  description: "Accelerate your tech career with interactive 3D WebGL labs, GPU-accelerated virtual boxes, and AI-powered technical mock interviews.",
+  title: "NeuronLabs | The Future of Tech Education",
+  description: "Code, train, and deploy instantly in zero-setup virtual boxes.",
   keywords: ["Virtual Labs", "Coding Sandbox", "AI Mock Interviews", "GPU Cloud", "Tech Education", "Learn to Code"],
   authors: [{ name: "NeuronLabs" }],
   openGraph: {
-    title: "NeuronLabs | Zero-Setup Virtual Sandboxes",
-    description: "Code, train, and deploy instantly in zero-setup virtual boxes. Enhance your tech skills with live multiplayer syncing.",
+    title: "NeuronLabs | The Future of Tech Education",
+    description: "Code, train, and deploy instantly in zero-setup virtual boxes.",
     url: "https://neuronlabs.online",
-    siteName: "NeuronLabs",
+    siteName: "Neuron Labs",
     images: [
       {
-        url: "/og-image.jpg", 
+        url: "https://neuronlabs.online/og-image.png",
         width: 1200,
         height: 630,
+        alt: "NeuronLabs Banner",
       },
     ],
     locale: "en_US",
@@ -43,6 +45,11 @@ export const metadata = {
     card: "summary_large_image",
     title: "NeuronLabs | The Future of Tech Education",
     description: "Code, train, and deploy instantly in zero-setup virtual boxes.",
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
   manifest: "/manifest.json",
   verification: {
@@ -66,8 +73,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Neuron Labs",
+              "alternateName": "NeuronLabs",
+              "url": "https://neuronlabs.online/"
+            })
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>
           <GlobalNav />

@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       headers: {
         Authorization: `Bearer ${session.jwt}`,
       },
-      next: { revalidate: 60 }
+      cache: 'no-store'
     });
     if (res.ok) {
       freshUser = await res.json();
@@ -108,6 +108,18 @@ export default async function DashboardPage() {
               </h2>
               
               <div className="space-y-4">
+                 <Link href="/virtual-box" className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                   <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center">
+                       <MonitorPlay className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <div className="font-semibold text-white">Virtual Box</div>
+                       <div className="text-xs text-gray-400">Launch a VM</div>
+                     </div>
+                </div>
+                </Link>
+                
                 <div className="flex items-center gap-4 p-3 rounded-2xl bg-white/5">
                   <div className="p-2 bg-neutral-800 rounded-xl text-neutral-400">
                     <User className="w-5 h-5" />
@@ -152,6 +164,13 @@ export default async function DashboardPage() {
                     </span>
                     <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-white transition-colors" />
                  </Link>
+                 <Link href="/virtual-box" className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                    <span className="flex items-center gap-3 text-neutral-300 group-hover:text-white transition-colors">
+                      <Terminal className="w-4 h-4 text-neutral-500 group-hover:text-indigo-400 transition-colors" />
+                      Virtual Box
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-white transition-colors" />
+                 </Link>
                  <Link href="/virtual-toolbox" className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
                     <span className="flex items-center gap-3 text-neutral-300 group-hover:text-white transition-colors">
                       <Code className="w-4 h-4 text-neutral-500 group-hover:text-purple-400 transition-colors" />
@@ -175,7 +194,7 @@ export default async function DashboardPage() {
                   <div className="p-3 bg-indigo-500/20 w-fit rounded-2xl mb-4">
                     <BookOpen className="w-6 h-6 text-indigo-400" />
                   </div>
-                  <h3 className="text-3xl font-bold mb-1">0</h3>
+                  <h3 className="text-3xl font-bold mb-1">{user.courses?.length || user.enrolled_courses?.length || 0}</h3>
                   <p className="text-neutral-400 font-medium">Enrolled Courses</p>
                 </div>
               </div>
@@ -188,7 +207,7 @@ export default async function DashboardPage() {
                   <div className="p-3 bg-purple-500/20 w-fit rounded-2xl mb-4">
                     <Code className="w-6 h-6 text-purple-400" />
                   </div>
-                  <h3 className="text-3xl font-bold mb-1">0</h3>
+                  <h3 className="text-3xl font-bold mb-1">{user.sandboxes?.length || user.virtual_boxes?.length || 0}</h3>
                   <p className="text-neutral-400 font-medium">Active Sandboxes</p>
                 </div>
               </div>

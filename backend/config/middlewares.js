@@ -7,7 +7,7 @@ const config = [
     {
       name: 'strapi::cors',
       config: {
-        origin: ['http://localhost:3000', 'https://neuron-frontend-o7em.vercel.app'],
+        origin: ['http://localhost:3000', 'https://neuronlabs.online', '*'],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
         headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
         keepHeaderOnError: true,

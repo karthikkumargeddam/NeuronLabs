@@ -1,7 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Mermaid from "../Mermaid";
+import Editor from "@monaco-editor/react";
+
+const getLanguageFromFileName = (fileName) => {
+  const ext = fileName.split('.').pop().toLowerCase();
+  const map = {
+    'py': 'python', 'js': 'javascript', 'jsx': 'javascript', 'ts': 'typescript', 'tsx': 'typescript',
+    'html': 'html', 'css': 'css', 'json': 'json', 'java': 'java', 'cpp': 'cpp', 'c': 'c', 'cs': 'csharp',
+    'go': 'go', 'rs': 'rust', 'php': 'php', 'rb': 'ruby', 'sql': 'sql', 'sh': 'shell', 'xml': 'xml',
+    'yaml': 'yaml', 'yml': 'yaml', 'md': 'markdown', 'csv': 'csv'
+  };
+  return map[ext] || 'plaintext';
+};
 
 export default function VSCodeWorkspace({ 
   code, setCode, 
@@ -9,6 +21,34 @@ export default function VSCodeWorkspace({
   isExecuting, handleRunCode, 
   visualization 
 }) {
+  const [activeFile, setActiveFile] = useState("main.py");
+  const [files, setFiles] = useState({
+    "main.py": code || "# Write your Python code here...",
+    "script.js": "console.log('Hello from JavaScript!');",
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>NeuronLabs</title>\n</head>\n<body>\n  <h1>Hello Web!</h1>\n</body>\n</html>",
+    "App.java": "public class App {\n    public static void main(String[] args) {\n        System.out.println(\"Hello Java!\");\n    }\n}",
+    "dataset.csv": "id,feature_1,feature_2,label\n1,0.5,0.2,0\n2,0.8,0.9,1\n3,0.1,0.4,0\n4,0.6,0.7,1"
+  });
+
+  // Whenever code prop changes (from textarea), update our local files state
+  useEffect(() => {
+    setFiles(prev => ({ ...prev, [activeFile]: code }));
+  }, [code]);
+
+  const handleFileClick = (fileName) => {
+    setActiveFile(fileName);
+    setCode(files[fileName]);
+  };
+
+  const handleNewFile = () => {
+    const fileName = prompt("Enter new file name (e.g., script.js, style.css, main.cpp):");
+    if (fileName && !files[fileName]) {
+      setFiles(prev => ({ ...prev, [fileName]: "" }));
+      setActiveFile(fileName);
+      setCode("");
+    }
+  };
+
   return (
     <div className="flex-grow flex flex-col md:flex-row gap-0 overflow-hidden bg-[#1e1e1e] rounded-lg border border-[#333] shadow-2xl">
       
@@ -27,33 +67,82 @@ export default function VSCodeWorkspace({
       </div>
 
       {/* Explorer Sidebar */}
-      <div className="w-60 bg-[#252526] flex-col border-r border-[#1e1e1e] hidden lg:flex">
+      <div className="w-60 bg-[#252526] flex-col border-r border-[#1e1e1e] hidden lg:flex select-none">
         <div className="text-[11px] uppercase text-gray-400 p-4 tracking-wider font-semibold">Explorer</div>
         <div className="flex-grow overflow-y-auto">
           <div className="px-4 py-1 text-sm text-gray-300 font-mono font-bold flex items-center gap-2 uppercase text-xs">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
             NEURON_LAB
           </div>
-          <div className="pl-8 py-1 mt-1 text-sm text-cyan-400 font-mono flex items-center gap-2 bg-[#37373d]">
-            <span className="text-[#519aba]">{"{}"}</span> main.py
-          </div>
-          <div className="pl-8 py-1 text-sm text-gray-400 hover:text-gray-200 font-mono flex items-center gap-2 cursor-pointer">
-            <span className="text-yellow-500">{"{}"}</span> utils.py
-          </div>
-          <div className="pl-8 py-1 text-sm text-gray-400 hover:text-gray-200 font-mono flex items-center gap-2 cursor-pointer">
-            <span className="text-[#a074c4]">{"[]"}</span> dataset.csv
-          </div>
+          
+          {Object.keys(files).map((fileName) => {
+            const ext = fileName.split('.').pop();
+            let color = "text-gray-400";
+            let icon = "{}";
+            if (ext === "py") { color = "text-[#519aba]"; }
+            else if (ext === "js" || ext === "jsx" || ext === "ts" || ext === "tsx") { color = "text-yellow-500"; }
+            else if (ext === "html") { color = "text-orange-500"; icon = "<>"; }
+            else if (ext === "css") { color = "text-blue-400"; icon = "#"; }
+            else if (ext === "java" || ext === "cpp" || ext === "c" || ext === "cs" || ext === "go" || ext === "rs") { color = "text-purple-400"; }
+            else if (ext === "csv" || ext === "json") { color = "text-[#a074c4]"; icon = "[]"; }
+            
+            return (
+              <div 
+                key={fileName}
+                onClick={() => handleFileClick(fileName)}
+                className={`pl-8 py-1 mt-1 text-sm font-mono flex items-center justify-between group cursor-pointer ${activeFile === fileName ? "bg-[#37373d] text-cyan-400" : "text-gray-400 hover:text-gray-200"}`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={color}>{icon}</span> {fileName}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Main Editor Area */}
       <div className="flex-grow flex flex-col min-w-0">
         {/* Editor Tabs */}
-        <div className="flex bg-[#2d2d2d] h-9 border-b border-[#1e1e1e] overflow-x-auto overflow-y-hidden">
-          <div className="flex items-center px-4 bg-[#1e1e1e] text-cyan-400 text-sm font-mono border-t border-t-cyan-400 gap-2 min-w-max cursor-pointer">
-            <span className="text-[#519aba]">{"{}"}</span> main.py
-            <button className="ml-2 w-4 h-4 hover:bg-[#333] rounded flex items-center justify-center text-gray-400 hover:text-white">✕</button>
-          </div>
+        <div className="flex bg-[#2d2d2d] h-9 border-b border-[#1e1e1e] overflow-x-auto overflow-y-hidden items-center">
+          {Object.keys(files).map((fileName) => {
+            const ext = fileName.split('.').pop();
+            let color = "text-gray-400";
+            let icon = "{}";
+            if (ext === "py") { color = "text-[#519aba]"; }
+            else if (ext === "js" || ext === "jsx" || ext === "ts" || ext === "tsx") { color = "text-yellow-500"; }
+            else if (ext === "html") { color = "text-orange-500"; icon = "<>"; }
+            else if (ext === "css") { color = "text-blue-400"; icon = "#"; }
+            else if (ext === "java" || ext === "cpp" || ext === "c" || ext === "cs" || ext === "go" || ext === "rs") { color = "text-purple-400"; }
+            else if (ext === "csv" || ext === "json") { color = "text-[#a074c4]"; icon = "[]"; }
+
+            return (
+              <div 
+                key={fileName}
+                onClick={() => handleFileClick(fileName)}
+                className={`flex items-center px-4 h-full text-sm font-mono min-w-max cursor-pointer border-r border-[#1e1e1e] ${
+                  activeFile === fileName 
+                    ? "bg-[#1e1e1e] text-cyan-400 border-t border-t-cyan-400" 
+                    : "bg-[#2d2d2d] text-gray-500 hover:bg-[#2d2d2d]/80"
+                }`}
+              >
+                <span className={`mr-2 ${color}`}>
+                  {icon}
+                </span> 
+                {fileName}
+                {activeFile === fileName && (
+                  <button className="ml-2 w-4 h-4 hover:bg-[#333] rounded flex items-center justify-center text-gray-400 hover:text-white">✕</button>
+                )}
+              </div>
+            );
+          })}
+          <button 
+            onClick={handleNewFile}
+            className="ml-2 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#333] rounded"
+            title="New File"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
         </div>
 
         {/* Editor & Vis Split */}
@@ -76,22 +165,35 @@ export default function VSCodeWorkspace({
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 )}
-                {isExecuting ? "Executing" : "Run Python File"}
+                {isExecuting ? "Executing" : "Run File"}
               </button>
             </div>
 
-            {/* Line numbers + Textarea */}
-            <div className="flex-grow flex overflow-auto custom-scrollbar p-2 relative text-[14px]">
-              <div className="w-10 flex-shrink-0 text-right pr-4 text-[#858585] font-mono select-none opacity-50 py-[2px] leading-[21px]">
-                {code.split('\\n').map((_, i) => (
-                  <div key={i}>{i + 1}</div>
-                ))}
-              </div>
-              <textarea
+            {/* Monaco Editor */}
+            <div className="flex-grow flex relative">
+              <Editor
+                height="100%"
+                theme="vs-dark"
+                path={activeFile}
+                defaultLanguage={getLanguageFromFileName(activeFile)}
+                language={getLanguageFromFileName(activeFile)}
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="w-full bg-transparent text-[#d4d4d4] font-mono resize-none outline-none whitespace-pre overflow-hidden leading-[21px]"
-                spellCheck="false"
+                onChange={(value) => setCode(value || "")}
+                options={{
+                  minimap: { enabled: true },
+                  fontSize: 14,
+                  wordWrap: "on",
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  padding: { top: 16 },
+                  fontFamily: "var(--font-mono)",
+                }}
+                loading={
+                  <div className="flex h-full items-center justify-center text-cyan-500 gap-3">
+                    <span className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full"></span>
+                    <span className="font-mono text-sm">Loading Editor...</span>
+                  </div>
+                }
               />
             </div>
           </div>
@@ -120,7 +222,7 @@ export default function VSCodeWorkspace({
           <div className="flex-grow p-4 font-mono text-[13px] overflow-y-auto text-[#cccccc]">
             <div className="flex items-center text-[#519aba] mb-1">
               <span>root@vbox-lab:~/workspace$</span>
-              {isExecuting && <span className="ml-2 text-gray-400">python main.py</span>}
+              {isExecuting && <span className="ml-2 text-gray-400">executing {activeFile}...</span>}
             </div>
             <div className="whitespace-pre-wrap leading-relaxed opacity-90">
               {output}

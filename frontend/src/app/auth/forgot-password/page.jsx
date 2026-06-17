@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setStatus({ type: "", message: "" });
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}`}/api/auth/forgot-password`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,13 +27,10 @@ export default function ForgotPasswordPage() {
         throw new Error(data?.error?.message || "Failed to process request.");
       }
 
-      setStatus({ 
-        type: "success", 
-        message: "Check your email (or the backend terminal) for a password reset link." 
-      });
+      toast.success("Password reset link sent to your email.");
       setEmail("");
     } catch (err) {
-      setStatus({ type: "error", message: err.message });
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -49,16 +45,6 @@ export default function ForgotPasswordPage() {
           <h1 className="text-3xl font-mono text-white mb-2">Password Recovery</h1>
           <p className="text-gray-400 font-mono text-sm">Enter your email to receive a reset link.</p>
         </div>
-
-        {status.message && (
-          <div className={`p-3 rounded mb-6 text-sm font-mono text-center border ${
-            status.type === "error" 
-              ? "bg-red-500/10 border-red-500/50 text-red-400" 
-              : "bg-green-500/10 border-green-500/50 text-green-400"
-          }`}>
-            {status.message}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>

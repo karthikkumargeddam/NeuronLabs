@@ -2,12 +2,11 @@ import { MessageSquare, ThumbsUp, CheckCircle2, Search, Filter } from "lucide-re
 import GlobalNav from "@/components/GlobalNav";
 import Link from "next/link";
 
-// We'll map showcases to "questions" for now so the backend still works
 async function getQuestions() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/showcases`, { next: { revalidate: 60 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337'}/api/forum-posts?populate=*`, { next: { revalidate: 60 } });
     const json = await res.json();
-    return json.data || [];
+    return json?.data || [];
   } catch (error) {
     console.error('Failed to fetch questions:', error);
     return [];
@@ -22,18 +21,21 @@ export const metadata = {
 export default async function CommunityPage() {
   const questions = await getQuestions();
   
-  // Create mock questions if the database is empty or mapping showcases
-  const displayQuestions = questions.length > 0 ? questions.map(q => ({
-    id: q.id,
-    title: q.title,
-    body: q.description,
-    author: q.author || "Anonymous User",
-    votes: q.upvotes || Math.floor(Math.random() * 50),
-    answers: Math.floor(Math.random() * 10),
-    tags: q.tags || ["machine-learning", "python"],
-    isResolved: Math.random() > 0.5,
-    createdAt: "2 hours ago"
-  })) : [
+  // Create mock questions if the database is empty
+  const displayQuestions = questions.length > 0 ? questions.map(q => {
+    const attrs = q.attributes || q;
+    return {
+      id: q.id || attrs.documentId || attrs.uuid,
+      title: attrs.title || "Untitled",
+      body: attrs.content || attrs.description || "",
+      author: attrs.author || "Anonymous User",
+      votes: attrs.upvotes || attrs.votes || Math.floor(Math.random() * 50),
+      answers: attrs.answersCount || Math.floor(Math.random() * 10),
+      tags: attrs.tags ? (typeof attrs.tags === 'string' ? attrs.tags.split(',') : attrs.tags) : ["discussion"],
+      isResolved: attrs.isResolved || Math.random() > 0.5,
+      createdAt: attrs.createdAt ? new Date(attrs.createdAt).toLocaleDateString() : "Recently"
+    };
+  }) : [
     {
       id: 1,
       title: "How do I deal with CUDA out of memory in PyTorch during fine-tuning?",

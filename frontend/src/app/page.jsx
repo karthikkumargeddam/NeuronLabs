@@ -183,7 +183,7 @@ function PricingSection() {
             <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> Full Curriculum Access</li>
             <li className="flex items-center gap-3"><span className="text-cyan-600 dark:text-cyan-400">✓</span> 50hrs GPU Acceleration</li>
           </ul>
-          <CheckoutButton amount={299} planName="Pro" />
+          <CheckoutButton amount={1} planName="Pro" />
         </div>
 
         {/* Enterprise Plan */}
@@ -259,30 +259,39 @@ export default async function Home() {
 
         {/* Feature Highlights Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-40 w-full max-w-7xl px-6 md:px-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background">
-            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center mb-8 border border-red-500/20 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+          <Link href="/features/ai-mock-interviews" className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background block cursor-pointer group">
+            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center mb-8 border border-red-500/20 shadow-[0_0_15px_rgba(220,38,38,0.1)] group-hover:bg-red-500/20 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-foreground">AI Voice Mock Interviews</h3>
+            <h3 className="text-2xl font-bold mb-4 text-foreground flex items-center gap-3 flex-wrap">
+              AI Voice Mock Interviews
+              <span className="text-[10px] uppercase font-black tracking-widest bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-1 rounded-md shadow-[0_0_10px_rgba(6,182,212,0.5)]">PRO</span>
+            </h3>
             <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Ace your placements. Our AI acts as a technical recruiter, dynamically listening to your microphone and verbally grilling you on your code.</p>
-          </div>
+          </Link>
           
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-background relative overflow-hidden">
+          <Link href="/features/3d-webgl-labs" className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-background relative overflow-hidden block cursor-pointer group">
             <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 mix-blend-overlay filter blur-[80px] opacity-30"></div>
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-8 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-8 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)] group-hover:bg-indigo-500/30 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-foreground">Interactive 3D WebGL Labs</h3>
+            <h3 className="text-2xl font-bold mb-4 text-foreground flex items-center gap-3 flex-wrap">
+              Interactive 3D WebGL Labs
+              <span className="text-[10px] uppercase font-black tracking-widest bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-1 rounded-md shadow-[0_0_10px_rgba(6,182,212,0.5)]">PRO</span>
+            </h3>
             <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Experience immersive education. Render complex Quantum Physics models and Molecular Biological structures dynamically in real-time 3D.</p>
-          </div>
+          </Link>
 
-          <div className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background">
-            <div className="w-14 h-14 rounded-2xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-8 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+          <Link href="/features/multiplayer-sync" className="glass-panel p-10 text-left hover:-translate-y-2 transition-transform duration-500 rounded-3xl bg-gradient-to-br from-card-bg to-background block cursor-pointer group">
+            <div className="w-14 h-14 rounded-2xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-8 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)] group-hover:bg-green-500/20 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-foreground">Live Multiplayer Syncing</h3>
+            <h3 className="text-2xl font-bold mb-4 text-foreground flex items-center gap-3 flex-wrap">
+              Live Multiplayer Syncing
+              <span className="text-[10px] uppercase font-black tracking-widest bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-1 rounded-md shadow-[0_0_10px_rgba(6,182,212,0.5)]">PRO</span>
+            </h3>
             <p className="text-gray-600 dark:text-gray-400 text-[1.05rem] leading-relaxed">Don't code alone. Invite your peers or tutors to your virtual lab and collaborate simultaneously with real-time Google Docs style syncing.</p>
-          </div>
+          </Link>
         </div>
 
         <Suspense fallback={<div className="mt-24 text-cyan-400 animate-pulse font-mono">Loading featured curriculum...</div>}>

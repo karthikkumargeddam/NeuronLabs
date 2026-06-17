@@ -3,15 +3,18 @@ import { useState } from 'react';
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 
-export default function RazorpayCheckout({ amount, userEmail }) {
+import { useSession } from 'next-auth/react';
+
+export default function RazorpayCheckout({ amount, userEmail, className, children }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { update } = useSession();
 
   const handlePayment = async () => {
     setLoading(true);
     try {
       // 1. Create Order
-      const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://wise-action-3f2ccfecaa.strapiapp.com';
+      const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337';
       const orderRes = await fetch(`${strapiUrl}/api/payment/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,8 +27,8 @@ export default function RazorpayCheckout({ amount, userEmail }) {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
         amount: order.amount, 
         currency: order.currency,
-        name: "Neuron Labs",
-        description: "Pro Access Verification",
+        name: "NeuronLabs",
+        description: "NeuronLabs Pro Access",
         order_id: order.id,
         handler: async function (response) {
           // 3. Verify Payment
@@ -41,8 +44,9 @@ export default function RazorpayCheckout({ amount, userEmail }) {
           });
           
           if (verifyRes.ok) {
-            alert("Payment Successful! You are now a Pro Member.");
-            router.refresh(); // Refresh page to remove blur
+            await update({ isPro: true });
+            // Force a hard reload to clear Next.js aggressive client-side cache
+            window.location.href = '/dashboard';
           } else {
             alert("Payment verification failed. Please contact support.");
           }
@@ -51,7 +55,8 @@ export default function RazorpayCheckout({ amount, userEmail }) {
           email: userEmail,
         },
         theme: {
-          color: "#0f9d58"
+          color: "#0a0a0a", // Dark mode accent
+          backdrop_color: "#000000"
         }
       };
 
@@ -74,9 +79,9 @@ export default function RazorpayCheckout({ amount, userEmail }) {
       <button 
         onClick={handlePayment} 
         disabled={loading}
-        className="inline-block bg-[#0f9d58] text-white px-8 py-3 rounded-full font-bold hover:bg-[#0c8249] transition-all hover:scale-105 shadow-[0_0_20px_rgba(15,157,88,0.4)] disabled:opacity-50"
+        className={className || "inline-block bg-[#0f9d58] text-white px-8 py-3 rounded-full font-bold hover:bg-[#0c8249] transition-all hover:scale-105 shadow-[0_0_20px_rgba(15,157,88,0.4)] disabled:opacity-50"}
       >
-        {loading ? 'Securely Connecting...' : `Unlock Pro Access - ₹${amount}`}
+        {loading ? 'Securely Connecting...' : (children || `Unlock Pro Access - ₹${amount}`)}
       </button>
     </>
   );
