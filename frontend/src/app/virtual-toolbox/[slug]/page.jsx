@@ -1,12 +1,12 @@
 'use client';
 
 import React from "react";
+import { useParams } from 'next/navigation';
 import VirtualToolbox from "../../../components/VirtualToolbox";
 
-export default function VirtualToolboxSlugPage({ params }) {
-  // Use React.use() to unwrap params if this is a Client Component in Next 15, or just use params.slug directly.
-  // We'll safely access the slug from params
-  const { slug } = params;
+export default function VirtualToolboxSlugPage() {
+  const params = useParams();
+  const slug = params?.slug || 'vscode';
 
   return (
     <div className="h-screen flex flex-col bg-[#0a0a0a]">
