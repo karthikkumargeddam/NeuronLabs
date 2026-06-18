@@ -25,18 +25,7 @@ module.exports = ({ env }) => ({
       },
     },
   },
-  email: {
-    config: {
-      provider: 'strapi-provider-email-selzy',
-      providerOptions: {
-        apiKey: env('SELZY_API_KEY'),
-      },
-      settings: {
-        defaultFrom: env('SELZY_DEFAULT_FROM', 'hello@neuronlabs.edu'),
-        defaultReplyTo: env('SELZY_DEFAULT_REPLY_TO', 'hello@neuronlabs.edu'),
-      },
-    },
-  },
+
   comments: {
     enabled: true,
     resolve: './node_modules/strapi-plugin-comments'
